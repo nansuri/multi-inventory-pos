@@ -5,7 +5,7 @@ export default {
     recipes: "Manajemen Resep",
     production: "Aula Produksi",
     pos: "POS (Pesanan)",
-    preparations: "Log Persiapan",
+    productionLog: "Log Produksi",
     settings: "Pengaturan",
     logout: "Keluar",
     cancel: "Batal",
@@ -24,7 +24,11 @@ export default {
     unit: "Unit",
     name: "Nama",
     back: "Kembali",
-    confirm: "Konfirmasi"
+    confirm: "Konfirmasi",
+    active: "Aktif",
+    inactive: "Nonaktif",
+    deactivate: "Nonaktifkan",
+    activate: "Aktifkan"
   },
   dashboard: {
     overview: "Ikhtisar Sistem",

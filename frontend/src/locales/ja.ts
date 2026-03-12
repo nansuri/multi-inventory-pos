@@ -5,7 +5,7 @@ export default {
     recipes: "レシピ管理",
     production: "調理場",
     pos: "POS (注文)",
-    preparations: "調理ログ",
+    productionLog: "生産ログ",
     settings: "設定",
     logout: "ログアウト",
     cancel: "キャンセル",
@@ -24,7 +24,11 @@ export default {
     unit: "単位",
     name: "名前",
     back: "戻る",
-    confirm: "確認"
+    confirm: "確認",
+    active: "有効",
+    inactive: "無効",
+    deactivate: "無効にする",
+    activate: "有効にする"
   },
   dashboard: {
     overview: "システム概要",

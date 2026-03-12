@@ -57,3 +57,16 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
+
+func (h *AuthHandler) Me(c *gin.Context) {
+	userID := c.MustGet("user_id").(uint)
+	tenantID := c.MustGet("tenant_id").(uint)
+
+	user, err := h.usecase.GetMe(userID, tenantID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}

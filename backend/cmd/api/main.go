@@ -35,7 +35,9 @@ func main() {
 		&domain.Table{}, 
 		&domain.Order{}, 
 		&domain.OrderItem{}, 
-		&domain.PreparationLog{},
+		&domain.ProductionLog{},
+		&domain.ProductionIngredientLog{},
+		&domain.Role{},
 	)
 	if err != nil {
 		log.Fatalf("Could not auto migrate: %v", err)
@@ -54,6 +56,7 @@ func main() {
 	productRepo := repository.NewProductRepository(db)
 	orderRepo := repository.NewOrderRepository(db)
 	tenantRepo := repository.NewTenantRepository(db)
+	employeeRepo := repository.NewEmployeeRepository(db)
 
 	// Initialize Usecase
 	authUsecase := usecase.NewAuthUsecase(authRepo, cfg.JWTSecret)
@@ -61,6 +64,7 @@ func main() {
 	productUsecase := usecase.NewProductUsecase(productRepo, inventoryRepo)
 	orderUsecase := usecase.NewOrderUsecase(orderRepo, inventoryRepo)
 	tenantUsecase := usecase.NewTenantUsecase(tenantRepo)
+	employeeUsecase := usecase.NewEmployeeUsecase(employeeRepo)
 	reportUsecase := usecase.NewReportUsecase(db)
 
 	// Initialize Handler
@@ -69,6 +73,7 @@ func main() {
 	productHandler := deliveryHttp.NewProductHandler(productUsecase)
 	orderHandler := deliveryHttp.NewOrderHandler(orderUsecase)
 	tenantHandler := deliveryHttp.NewTenantHandler(tenantUsecase)
+	employeeHandler := deliveryHttp.NewEmployeeHandler(employeeUsecase)
 	dashboardHandler := deliveryHttp.NewDashboardHandler(reportUsecase)
 
 	// Setup Gin
@@ -95,16 +100,7 @@ func main() {
 	api := r.Group("/api")
 	api.Use(middleware.AuthMiddleware(cfg.JWTSecret))
 	{
-		api.GET("/me", func(c *gin.Context) {
-			userID := c.MustGet("user_id")
-			tenantID := c.MustGet("tenant_id")
-			role := c.MustGet("role")
-			c.JSON(200, gin.H{
-				"user_id":   userID,
-				"tenant_id": tenantID,
-				"role":      role,
-			})
-		})
+		api.GET("/me", authHandler.Me)
 
 		// Inventory Routes
 		inventory := api.Group("/inventory")
@@ -113,6 +109,9 @@ func main() {
 			inventory.GET("/items", inventoryHandler.ListItems)
 			inventory.GET("/items/barcode/:barcode", inventoryHandler.GetByBarcode)
 			inventory.PATCH("/items/:id/stock", inventoryHandler.UpdateStock)
+			inventory.PUT("/items/:id", inventoryHandler.UpdateItem)
+			inventory.DELETE("/items/:id", inventoryHandler.DeleteItem)
+			inventory.PATCH("/items/:id/toggle", inventoryHandler.ToggleActive)
 		}
 
 		// Product & Recipe Routes
@@ -120,6 +119,8 @@ func main() {
 		{
 			products.POST("", productHandler.CreateProduct)
 			products.GET("", productHandler.ListProducts)
+			products.PUT("/:id", productHandler.UpdateProduct)
+			products.DELETE("/:id", productHandler.DeleteProduct)
 			products.POST("/:id/recipe", productHandler.SetRecipe)
 			products.POST("/:id/prepare", productHandler.Prepare)
 		}
@@ -144,10 +145,24 @@ func main() {
 			orders.POST("/:id/complete", orderHandler.CompleteOrder)
 		}
 
-		// Dashboard Routes
-		dashboard := api.Group("/dashboard")
+		// Dashboard & Report Routes
+		api.GET("/dashboard/summary", dashboardHandler.GetSummary)
+		api.GET("/reports/orders", dashboardHandler.GetOrderHistory)
+
+		// Employee & Role Routes
+		roles := api.Group("/roles")
 		{
-			dashboard.GET("/summary", dashboardHandler.GetSummary)
+			roles.POST("", employeeHandler.CreateRole)
+			roles.GET("", employeeHandler.ListRoles)
+			roles.PUT("/:id", employeeHandler.UpdateRole)
+			roles.DELETE("/:id", employeeHandler.DeleteRole)
+		}
+
+		employees := api.Group("/employees")
+		{
+			employees.POST("", employeeHandler.CreateEmployee)
+			employees.GET("", employeeHandler.ListEmployees)
+			employees.DELETE("/:id", employeeHandler.DeleteEmployee)
 		}
 	}
 

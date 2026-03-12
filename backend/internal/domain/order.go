@@ -36,6 +36,7 @@ const (
 type Order struct {
 	ID              uint           `gorm:"primaryKey" json:"id"`
 	TenantID        uint           `gorm:"not null;index" json:"tenant_id"`
+	CustomerName    string         `json:"customer_name"`
 	TableID         *uint          `json:"table_id"` // Nullable for Delivery
 	Table           *Table         `json:"table,omitempty"`
 	Status          OrderStatus    `gorm:"type:varchar(20);default:'pending'" json:"status"`
@@ -46,8 +47,9 @@ type Order struct {
 	Items           []OrderItem    `json:"items,omitempty"`
 	CreatedAt       time.Time      `json:"created_at"`
 	UpdatedAt       time.Time      `json:"updated_at"`
-	DeletedAt       gorm.DeletedAt `gorm:"index" json:"-"`
+	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
 }
+
 
 type OrderItem struct {
 	ID        uint           `gorm:"primaryKey" json:"id"`

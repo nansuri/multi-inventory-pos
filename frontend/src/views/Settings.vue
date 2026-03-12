@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import DashboardLayout from '../layouts/DashboardLayout.vue';
+import ConfirmModal from '../components/ConfirmModal.vue';
 import { useConfigStore } from '../stores/config';
 import { Settings, Globe, Store, Save, CheckCircle2 } from 'lucide-vue-next';
 
@@ -10,6 +11,17 @@ const successMessage = ref('');
 const tenantName = ref('');
 const currency = ref('');
 const language = ref('');
+
+const alertConfig = ref({
+  show: false,
+  title: '',
+  message: '',
+  type: 'info' as 'info' | 'success' | 'warning' | 'danger'
+});
+
+const showAlert = (title: string, message: string, type: any = 'info') => {
+  alertConfig.value = { show: true, title, message, type };
+};
 
 onMounted(async () => {
   await configStore.fetchTenantSettings();
@@ -25,7 +37,7 @@ const saveSettings = async () => {
     successMessage.value = "Settings saved successfully!";
     setTimeout(() => successMessage.value = '', 3000);
   } catch (error) {
-    alert("Failed to save settings");
+    showAlert("Update Failed", "We couldn't save your tenant settings. Please try again.", "danger");
   }
 };
 </script>
@@ -105,5 +117,15 @@ const saveSettings = async () => {
         </div>
       </div>
     </div>
+
+    <!-- Alert Modal -->
+    <ConfirmModal 
+      :show="alertConfig.show"
+      :title="alertConfig.title"
+      :message="alertConfig.message"
+      :type="alertConfig.type"
+      :showCancel="false"
+      @confirm="alertConfig.show = false"
+    />
   </DashboardLayout>
 </template>

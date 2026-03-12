@@ -5,7 +5,7 @@ export default {
     recipes: "Recipe Management",
     production: "Production Hall",
     pos: "POS (Orders)",
-    preparations: "Preparation Log",
+    productionLog: "Production Log",
     settings: "Settings",
     logout: "Logout",
     cancel: "Cancel",
@@ -24,7 +24,11 @@ export default {
     unit: "Unit",
     name: "Name",
     back: "Back",
-    confirm: "Confirm"
+    confirm: "Confirm",
+    active: "Active",
+    inactive: "Inactive",
+    deactivate: "Deactivate",
+    activate: "Activate"
   },
   dashboard: {
     overview: "System Overview",

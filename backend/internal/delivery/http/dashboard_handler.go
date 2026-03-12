@@ -26,3 +26,20 @@ func (h *DashboardHandler) GetSummary(c *gin.Context) {
 
 	c.JSON(http.StatusOK, summary)
 }
+
+func (h *DashboardHandler) GetOrderHistory(c *gin.Context) {
+	tenantID := c.MustGet("tenant_id").(uint)
+	period := c.DefaultQuery("period", "day")
+
+	orders, totalRevenue, orderCount, err := h.usecase.GetOrderHistory(tenantID, period)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"orders":        orders,
+		"total_revenue": totalRevenue,
+		"order_count":   orderCount,
+	})
+}

@@ -1,17 +1,41 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import DashboardLayout from '../layouts/DashboardLayout.vue';
+import ConfirmModal from '../components/ConfirmModal.vue';
 import api from '../api/axios';
 import { useConfigStore } from '../stores/config';
-import { ShoppingCart, CheckCircle, Users, Plus, Minus, UtensilsCrossed, Trash2, CreditCard, ChefHat } from 'lucide-vue-next';
+import { ShoppingCart, CheckCircle, Users, Plus, Minus, UtensilsCrossed, Trash2, User, ChefHat } from 'lucide-vue-next';
+import { useRouter } from 'vue-router';
 
 const tables = ref<any[]>([]);
 const products = ref<any[]>([]);
 const selectedTable = ref<any>(null);
 const cart = ref<any[]>([]);
+const customerName = ref('');
 const loading = ref(true);
+const actionLoading = ref(false);
 const configStore = useConfigStore();
+const router = useRouter();
 const isAddTableModalOpen = ref(false);
+
+const alertConfig = ref({
+  show: false,
+  title: '',
+  message: '',
+  type: 'info' as 'info' | 'success' | 'warning' | 'danger',
+  confirmText: 'OK',
+  callback: null as (() => void) | null
+});
+
+const showAlert = (title: string, message: string, type: any = 'info', confirmText = 'OK', callback: any = null) => {
+  alertConfig.value = { show: true, title, message, type, confirmText, callback };
+};
+
+const handleAlertConfirm = () => {
+  const cb = alertConfig.value.callback;
+  alertConfig.value.show = false;
+  if (cb) cb();
+};
 
 const newTable = ref({
   table_number: '',
@@ -74,10 +98,16 @@ const totalPrice = () => cart.value.reduce((sum, item) => sum + (item.price * it
 
 const placeOrder = async () => {
   if (!selectedTable.value || cart.value.length === 0) return;
+  if (!customerName.value) {
+    showAlert("Missing Info", "Please enter the customer / booker name to proceed.", "warning");
+    return;
+  }
   
+  actionLoading.value = true;
   try {
     const orderData = {
       table_id: selectedTable.value.id,
+      customer_name: customerName.value,
       total_price: totalPrice(),
       items: cart.value.map(item => ({
         product_id: item.product_id,
@@ -86,18 +116,26 @@ const placeOrder = async () => {
       }))
     };
     
-    const response = await api.post('/api/orders', orderData);
-    const orderId = response.data.id;
+    await api.post('/api/orders', orderData);
     
-    // Automatically complete for this demo version to show inventory deduction
-    await api.post(`/api/orders/${orderId}/complete`);
-    
-    alert('Order placed and payment processed!');
+    showAlert(
+      "Order Placed", 
+      `Order for ${customerName.value} at Table ${selectedTable.value.table_number} has been recorded.`, 
+      "success",
+      "Go to Payments",
+      () => {
+        router.push('/pos/payment');
+      }
+    );
+
     cart.value = [];
     selectedTable.value = null;
+    customerName.value = '';
     await fetchInitialData();
   } catch (error: any) {
-    alert('Failed to place order: ' + (error.response?.data?.error || error.message));
+    showAlert("Order Failed", error.response?.data?.error || error.message, "danger");
+  } finally {
+    actionLoading.value = false;
   }
 };
 
@@ -118,7 +156,6 @@ onMounted(fetchInitialData);
               </div>
               {{ $t('pos.floorPlan') }}
             </h3>
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ tables.length }} {{ $t('pos.tablesAvailable', 'Tables Available') }}</span>
           </div>
           
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -136,7 +173,7 @@ onMounted(fetchInitialData);
               ]"
               :disabled="table.status === 'occupied'"
             >
-              <span class="text-sm font-black uppercase tracking-tighter" :class="selectedTable?.id === table.id ? 'text-indigo-100' : 'text-slate-400'">{{ $t('common.table', 'Table') }}</span>
+              <span class="text-sm font-black uppercase tracking-tighter" :class="selectedTable?.id === table.id ? 'text-indigo-100' : 'text-slate-400'">{{ $t('common.table') }}</span>
               <span class="text-2xl font-black">{{ table.table_number }}</span>
               <div class="mt-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider" 
                 :class="[
@@ -159,7 +196,7 @@ onMounted(fetchInitialData);
         </section>
 
         <!-- Product Selection -->
-        <section v-if="selectedTable" class="animate-in slide-in-from-bottom-4 duration-500">
+        <section v-if="selectedTable" class="animate-in slide-in-from-bottom-4 duration-500 pb-10">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
               <div class="p-2 bg-orange-100 text-orange-600 rounded-lg">
@@ -167,7 +204,6 @@ onMounted(fetchInitialData);
               </div>
               {{ $t('pos.availableMenu') }}
             </h3>
-            <div class="bg-indigo-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">{{ $t('pos.orderingFor', 'Ordering for') }} Table {{ selectedTable.table_number }}</div>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -211,11 +247,10 @@ onMounted(fetchInitialData);
         </div>
       </div>
 
-      <!-- Right Panel: Current Order (Receipt Style) -->
+      <!-- Right Panel: Order Setup -->
       <div class="w-full lg:w-[400px] bg-white rounded-[3rem] shadow-2xl shadow-slate-200 border border-slate-100 flex flex-col overflow-hidden relative">
-        <!-- Header -->
-        <div class="p-8 bg-slate-900 text-white relative">
-          <div class="flex justify-between items-center mb-6">
+        <div class="p-8 bg-slate-900 text-white">
+          <div class="flex justify-between items-center mb-8">
             <h3 class="font-black text-xl flex items-center gap-3">
               <ShoppingCart class="w-6 h-6 text-indigo-400" />
               {{ $t('pos.yourOrder') }}
@@ -224,19 +259,34 @@ onMounted(fetchInitialData);
               <Trash2 class="w-5 h-5" />
             </button>
           </div>
-          
-          <div v-if="selectedTable" class="bg-indigo-600/30 border border-indigo-500/30 rounded-2xl p-4 flex items-center justify-between">
-            <div>
-              <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest">{{ $t('pos.selectedTable', 'Selected Table') }}</p>
-              <p class="text-2xl font-black">T-{{ selectedTable.table_number }}</p>
+
+          <div class="space-y-6">
+            <div class="space-y-2">
+              <label class="text-[10px] font-black uppercase text-indigo-300 tracking-widest ml-1">Customer / Booker Name</label>
+              <div class="relative">
+                <input 
+                  v-model="customerName" 
+                  type="text" 
+                  placeholder="e.g. John Doe"
+                  class="w-full bg-white/10 border border-white/10 rounded-2xl px-12 py-4 font-bold text-white focus:bg-white/20 focus:border-indigo-400 outline-none transition-all"
+                />
+                <User class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+              </div>
             </div>
-            <Users class="w-8 h-8 text-indigo-400 opacity-50" />
+
+            <div v-if="selectedTable" class="bg-indigo-600/30 border border-indigo-500/30 rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest">Table</p>
+                <p class="text-2xl font-black">T-{{ selectedTable.table_number }}</p>
+              </div>
+              <Users class="w-8 h-8 text-indigo-400 opacity-50" />
+            </div>
           </div>
         </div>
 
-        <!-- Receipt Items -->
+        <!-- Cart Items -->
         <div class="flex-1 overflow-auto p-8 space-y-6 custom-scrollbar">
-          <div v-for="(item, index) in cart" :key="index" class="flex items-start gap-4 animate-in slide-in-from-right-4 duration-300">
+          <div v-for="(item, index) in cart" :key="index" class="flex items-start gap-4">
             <div class="flex flex-col items-center gap-1 bg-slate-50 rounded-xl p-1 border border-slate-100">
               <button @click="addToCart({id: item.product_id, name: item.name, price: item.price})" class="p-1 hover:text-indigo-600 transition-colors">
                 <Plus class="w-3 h-3" />
@@ -246,46 +296,33 @@ onMounted(fetchInitialData);
                 <Minus class="w-3 h-3" />
               </button>
             </div>
-            
             <div class="flex-1 min-w-0">
-              <p class="font-bold text-slate-800 truncate">{{ item.name }}</p>
-              <p class="text-[10px] font-black text-slate-400 uppercase">{{ configStore.formatCurrency(item.price) }} unit</p>
+              <p class="font-bold text-slate-800 truncate text-sm">{{ item.name }}</p>
+              <p class="text-[10px] font-black text-slate-400 uppercase">{{ configStore.formatCurrency(item.price) }}</p>
             </div>
-            
-            <p class="font-black text-slate-800">{{ configStore.formatCurrency(item.price * item.quantity) }}</p>
+            <p class="font-black text-slate-800 text-sm">{{ configStore.formatCurrency(item.price * item.quantity) }}</p>
           </div>
 
-          <div v-if="cart.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200 py-20">
-            <ShoppingCart class="w-20 h-20 mb-4 opacity-10" />
-            <p class="font-black uppercase tracking-widest text-sm opacity-30 text-slate-400">{{ $t('pos.cartEmpty') }}</p>
+          <div v-if="cart.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200 py-10">
+            <ShoppingCart class="w-16 h-16 mb-4 opacity-10" />
+            <p class="font-black uppercase tracking-widest text-[10px] opacity-30 text-slate-400">{{ $t('pos.cartEmpty') }}</p>
           </div>
         </div>
 
-        <!-- Footer / Checkout -->
         <div class="p-8 border-t-2 border-dashed border-slate-100 bg-slate-50/50">
-          <div class="space-y-3 mb-8">
-            <div class="flex justify-between items-center text-slate-400 font-bold text-xs uppercase tracking-widest">
-              <span>{{ $t('pos.subtotal') }}</span>
-              <span>{{ configStore.formatCurrency(totalPrice()) }}</span>
-            </div>
-            <div class="flex justify-between items-center text-slate-400 font-bold text-xs uppercase tracking-widest">
-              <span>{{ $t('pos.tax') }} (0%)</span>
-              <span>{{ configStore.formatCurrency(0) }}</span>
-            </div>
-            <div class="pt-3 border-t border-slate-200 flex justify-between items-center">
-              <span class="text-slate-800 font-black text-lg">{{ $t('pos.totalAmount') }}</span>
-              <span class="text-3xl font-black text-indigo-600">{{ configStore.formatCurrency(totalPrice()) }}</span>
-            </div>
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-slate-800 font-black text-lg">Total</span>
+            <span class="text-3xl font-black text-indigo-600">{{ configStore.formatCurrency(totalPrice()) }}</span>
           </div>
           
           <button 
             @click="placeOrder"
-            :disabled="!selectedTable || cart.length === 0"
+            :disabled="!selectedTable || cart.length === 0 || actionLoading"
             class="w-full bg-slate-900 text-white py-5 rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-indigo-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl shadow-slate-200 group"
           >
-            <CreditCard class="w-6 h-6" />
-            {{ $t('pos.processPayment') }}
-            <CheckCircle class="w-5 h-5 text-green-400 group-hover:text-white transition-colors" />
+            <span v-if="actionLoading" class="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
+            <CheckCircle v-else class="w-6 h-6 text-green-400 group-hover:text-white transition-colors" />
+            Place Order
           </button>
         </div>
       </div>
@@ -293,26 +330,35 @@ onMounted(fetchInitialData);
 
     <!-- Add Table Modal -->
     <div v-if="isAddTableModalOpen" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 shadow-2xl">
+      <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 shadow-2xl scale-in-center">
         <h3 class="text-2xl font-black text-slate-800 mb-2">{{ $t('pos.newTable') }}</h3>
-        <p class="text-sm font-medium text-slate-400 mb-8">Define a new physical spot in your floor plan.</p>
-        
         <form @submit.prevent="addTable" class="space-y-6">
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ $t('pos.tableIdentifier', 'Table Identifier') }}</label>
-            <input v-model="newTable.table_number" type="text" required placeholder="e.g. 05, A2, Patio" class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Table Identifier</label>
+            <input v-model="newTable.table_number" type="text" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
           </div>
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ $t('pos.seatingCapacity', 'Seating Capacity') }}</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Seating Capacity</label>
             <input v-model.number="newTable.capacity" type="number" min="1" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
           </div>
-          <div class="flex flex-col gap-2 pt-4">
-            <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">{{ $t('common.save') }}</button>
-            <button type="button" @click="isAddTableModalOpen = false" class="w-full py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors">{{ $t('common.cancel') }}</button>
+          <div class="flex flex-col gap-2">
+            <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black">Create Table</button>
+            <button type="button" @click="isAddTableModalOpen = false" class="w-full py-4 text-slate-400 font-bold">Cancel</button>
           </div>
         </form>
       </div>
     </div>
+
+    <!-- Universal Alert Modal -->
+    <ConfirmModal 
+      :show="alertConfig.show"
+      :title="alertConfig.title"
+      :message="alertConfig.message"
+      :type="alertConfig.type"
+      :confirmText="alertConfig.confirmText"
+      :showCancel="false"
+      @confirm="handleAlertConfirm"
+    />
   </DashboardLayout>
 </template>
 
@@ -324,14 +370,9 @@ onMounted(fetchInitialData);
   background: var(--color-slate-200);
   border-radius: 10px;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-indigo-200);
-}
-
 .scale-in-center {
   animation: scale-in-center 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
-
 @keyframes scale-in-center {
   0% { transform: scale(0.9); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }

@@ -38,3 +38,41 @@ func (u *reportUsecase) GetDashboardSummary(tenantID uint) (*domain.DashboardSum
 
 	return &summary, nil
 }
+
+func (u *reportUsecase) GetOrderHistory(tenantID uint, period string) ([]domain.Order, float64, int64, error) {
+	var orders []domain.Order
+	var totalRevenue float64
+	var orderCount int64
+
+	now := time.Now()
+	var startTime time.Time
+
+	switch period {
+	case "day":
+		startTime = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	case "week":
+		// Assume week starts on Monday
+		offset := int(now.Weekday()) - 1
+		if offset < 0 {
+			offset = 6
+		}
+		startTime = time.Date(now.Year(), now.Month(), now.Day()-offset, 0, 0, 0, 0, now.Location())
+	case "month":
+		startTime = time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+	default:
+		startTime = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	}
+
+	query := u.db.Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted)
+	
+	err := query.Preload("Table").Preload("Items.Product").Order("created_at desc").Find(&orders).Error
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted).Count(&orderCount)
+	u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted).
+		Select("COALESCE(SUM(total_price), 0)").Scan(&totalRevenue)
+
+	return orders, totalRevenue, orderCount, nil
+}

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/username/multi-inventory-manager/internal/domain"
+	"github.com/username/multi-inventory-manager/pkg/utils"
 )
 
 type productUsecase struct {
@@ -25,6 +26,14 @@ func (u *productUsecase) GetProductByID(id uint, tenantID uint) (*domain.Product
 
 func (u *productUsecase) ListProducts(tenantID uint) ([]domain.Product, error) {
 	return u.repo.ListProducts(tenantID)
+}
+
+func (u *productUsecase) UpdateProduct(product *domain.Product) error {
+	return u.repo.UpdateProduct(product)
+}
+
+func (u *productUsecase) DeleteProduct(id uint, tenantID uint) error {
+	return u.repo.DeleteProduct(id, tenantID)
 }
 
 func (u *productUsecase) SetRecipe(productID uint, tenantID uint, recipes []domain.Recipe) error {
@@ -61,24 +70,35 @@ func (u *productUsecase) PrepareProduct(productID uint, tenantID uint, pax int) 
 		return errors.New("product has no recipe defined")
 	}
 
-	// 2. Check if sufficient stock for ALL ingredients
+	// 2. Check if sufficient stock for ALL ingredients & prepare snapshots
+	var ingredientLogs []domain.ProductionIngredientLog
 	for _, recipe := range product.Recipes {
-		totalNeeded := recipe.Quantity * float64(pax)
-		if recipe.Ingredient.CurrentStock < totalNeeded {
+		// Convert recipe quantity to ingredient's stock unit
+		neededInStockUnit, err := utils.ConvertUnit(recipe.Quantity*float64(pax), recipe.Unit, recipe.Ingredient.Unit)
+		if err != nil {
+			return err
+		}
+
+		if recipe.Ingredient.CurrentStock < neededInStockUnit {
 			return errors.New("insufficient stock for ingredient: " + recipe.Ingredient.Name)
 		}
+
+		// Snapshot for log
+		ingredientLogs = append(ingredientLogs, domain.ProductionIngredientLog{
+			IngredientName: recipe.Ingredient.Name,
+			Quantity:       recipe.Quantity * float64(pax),
+			Unit:           recipe.Unit,
+		})
 	}
 
 	// 3. Deduct stock
 	for _, recipe := range product.Recipes {
-		totalNeeded := recipe.Quantity * float64(pax)
+		neededInStockUnit, _ := utils.ConvertUnit(recipe.Quantity*float64(pax), recipe.Unit, recipe.Ingredient.Unit)
 		err := u.inventoryRepo.UpdateItem(&domain.Item{
 			ID:           recipe.IngredientID,
 			TenantID:     tenantID,
-			CurrentStock: recipe.Ingredient.CurrentStock - totalNeeded,
+			CurrentStock: recipe.Ingredient.CurrentStock - neededInStockUnit,
 		})
-		// Note: The simple UpdateItem in inventoryRepo might need a specific UpdateStock method to be safe
-		// Let's assume we use UpdateItem for now, but in real scenarios, use Atomic transactions.
 		if err != nil {
 			return err
 		}
@@ -90,14 +110,15 @@ func (u *productUsecase) PrepareProduct(productID uint, tenantID uint, pax int) 
 		return err
 	}
 
-	// 5. Create log
-	return u.repo.CreatePreparationLog(&domain.PreparationLog{
-		TenantID:  tenantID,
-		ProductID: productID,
-		Pax:       pax,
+	// 5. Create log with ingredients
+	return u.repo.CreateProductionLog(&domain.ProductionLog{
+		TenantID:    tenantID,
+		ProductID:   productID,
+		Pax:         pax,
+		Ingredients: ingredientLogs,
 	})
 }
 
-func (u *productUsecase) ListPreparationLogs(tenantID uint) ([]domain.PreparationLog, error) {
-	return u.repo.ListPreparationLogs(tenantID)
+func (u *productUsecase) ListProductionLogs(tenantID uint) ([]domain.ProductionLog, error) {
+	return u.repo.ListProductionLogs(tenantID)
 }

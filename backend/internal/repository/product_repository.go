@@ -51,12 +51,12 @@ func (r *productRepository) ClearRecipes(productID uint) error {
 	return r.db.Where("product_id = ?", productID).Delete(&domain.Recipe{}).Error
 }
 
-func (r *productRepository) CreatePreparationLog(log *domain.PreparationLog) error {
+func (r *productRepository) CreateProductionLog(log *domain.ProductionLog) error {
 	return r.db.Create(log).Error
 }
 
-func (r *productRepository) ListPreparationLogs(tenantID uint) ([]domain.PreparationLog, error) {
-	var logs []domain.PreparationLog
-	err := r.db.Preload("Product").Where("tenant_id = ?", tenantID).Order("created_at desc").Find(&logs).Error
+func (r *productRepository) ListProductionLogs(tenantID uint) ([]domain.ProductionLog, error) {
+	var logs []domain.ProductionLog
+	err := r.db.Preload("Product").Preload("Ingredients").Where("tenant_id = ?", tenantID).Order("created_at desc").Find(&logs).Error
 	return logs, err
 }

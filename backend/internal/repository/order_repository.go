@@ -45,7 +45,7 @@ func (r *orderRepository) GetOrderByID(id uint, tenantID uint) (*domain.Order, e
 
 func (r *orderRepository) ListOrders(tenantID uint) ([]domain.Order, error) {
 	var orders []domain.Order
-	err := r.db.Where("tenant_id = ?", tenantID).Order("created_at desc").Find(&orders).Error
+	err := r.db.Preload("Table").Preload("Items.Product").Where("tenant_id = ?", tenantID).Order("created_at desc").Find(&orders).Error
 	return orders, err
 }
 

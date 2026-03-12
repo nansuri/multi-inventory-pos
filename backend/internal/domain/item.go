@@ -16,6 +16,7 @@ type Item struct {
 	CurrentStock  float64        `gorm:"type:decimal(10,2);default:0" json:"current_stock"`
 	MinStockAlert float64        `gorm:"type:decimal(10,2);default:0" json:"min_stock_alert"`
 	Unit          string         `gorm:"not null" json:"unit"` // KG, GR, Piece, etc.
+	IsActive      bool           `gorm:"default:true" json:"is_active"`
 	CreatedAt     time.Time      `json:"created_at"`
 	UpdatedAt     time.Time      `json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
@@ -27,6 +28,7 @@ type InventoryRepository interface {
 	GetItemByBarcode(barcode string, tenantID uint) (*Item, error)
 	ListItems(tenantID uint) ([]Item, error)
 	UpdateItem(item *Item) error
+	DeleteItem(id uint, tenantID uint) error
 }
 
 type InventoryUsecase interface {
@@ -34,5 +36,8 @@ type InventoryUsecase interface {
 	GetItemByID(id uint, tenantID uint) (*Item, error)
 	GetItemByBarcode(barcode string, tenantID uint) (*Item, error)
 	ListItems(tenantID uint) ([]Item, error)
+	UpdateItem(item *Item) error
 	UpdateStock(itemID uint, tenantID uint, quantity float64) error
+	DeleteItem(id uint, tenantID uint) error
+	ToggleActive(id uint, tenantID uint) error
 }

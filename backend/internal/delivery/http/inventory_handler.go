@@ -59,6 +59,53 @@ func (h *InventoryHandler) GetByBarcode(c *gin.Context) {
 	c.JSON(http.StatusOK, item)
 }
 
+func (h *InventoryHandler) UpdateItem(c *gin.Context) {
+	tenantID := c.MustGet("tenant_id").(uint)
+	idStr := c.Param("id")
+	id, _ := strconv.ParseUint(idStr, 10, 32)
+
+	var item domain.Item
+	if err := c.ShouldBindJSON(&item); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	item.ID = uint(id)
+	item.TenantID = tenantID
+	if err := h.usecase.UpdateItem(&item); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "item updated"})
+}
+
+func (h *InventoryHandler) DeleteItem(c *gin.Context) {
+	tenantID := c.MustGet("tenant_id").(uint)
+	idStr := c.Param("id")
+	id, _ := strconv.ParseUint(idStr, 10, 32)
+
+	if err := h.usecase.DeleteItem(uint(id), tenantID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "item deleted"})
+}
+
+func (h *InventoryHandler) ToggleActive(c *gin.Context) {
+	tenantID := c.MustGet("tenant_id").(uint)
+	idStr := c.Param("id")
+	id, _ := strconv.ParseUint(idStr, 10, 32)
+
+	if err := h.usecase.ToggleActive(uint(id), tenantID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "item status toggled"})
+}
+
 type updateStockRequest struct {
 	Quantity float64 `json:"quantity" binding:"required"`
 }

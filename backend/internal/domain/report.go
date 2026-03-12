@@ -12,4 +12,5 @@ type DashboardSummary struct {
 
 type ReportUsecase interface {
 	GetDashboardSummary(tenantID uint) (*DashboardSummary, error)
+	GetOrderHistory(tenantID uint, period string) ([]Order, float64, int64, error)
 }

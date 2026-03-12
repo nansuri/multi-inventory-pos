@@ -36,8 +36,10 @@ func (r *inventoryRepository) ListItems(tenantID uint) ([]domain.Item, error) {
 }
 
 func (r *inventoryRepository) UpdateItem(item *domain.Item) error {
-	// If only updating stock, we can be more surgical
-	return r.db.Model(item).Updates(map[string]interface{}{
-		"current_stock": item.CurrentStock,
-	}).Error
+	// Full update for general editing, but scoped to ID and TenantID
+	return r.db.Model(&domain.Item{}).Where("id = ? AND tenant_id = ?", item.ID, item.TenantID).Updates(item).Error
+}
+
+func (r *inventoryRepository) DeleteItem(id uint, tenantID uint) error {
+	return r.db.Where("id = ? AND tenant_id = ?", id, tenantID).Delete(&domain.Item{}).Error
 }

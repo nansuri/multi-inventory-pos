@@ -30,13 +30,22 @@ type Recipe struct {
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
-type PreparationLog struct {
-	ID        uint      `gorm:"primaryKey" json:"id"`
-	TenantID  uint      `gorm:"not null;index" json:"tenant_id"`
-	ProductID uint      `gorm:"not null;index" json:"product_id"`
-	Product   Product   `gorm:"foreignKey:ProductID" json:"product,omitempty"`
-	Pax       int       `gorm:"not null" json:"pax"`
-	CreatedAt time.Time `json:"created_at"`
+type ProductionLog struct {
+	ID          uint                     `gorm:"primaryKey" json:"id"`
+	TenantID    uint                     `gorm:"not null;index" json:"tenant_id"`
+	ProductID   uint                     `gorm:"not null;index" json:"product_id"`
+	Product     Product                  `gorm:"foreignKey:ProductID" json:"product,omitempty"`
+	Pax         int                      `gorm:"not null" json:"pax"`
+	Ingredients []ProductionIngredientLog `json:"ingredients,omitempty"`
+	CreatedAt   time.Time                `json:"created_at"`
+}
+
+type ProductionIngredientLog struct {
+	ID              uint    `gorm:"primaryKey" json:"id"`
+	ProductionLogID uint    `gorm:"not null;index" json:"production_log_id"`
+	IngredientName  string  `gorm:"not null" json:"ingredient_name"`
+	Quantity        float64 `gorm:"type:decimal(10,2);not null" json:"quantity"`
+	Unit            string  `gorm:"not null" json:"unit"`
 }
 
 type ProductRepository interface {
@@ -51,16 +60,18 @@ type ProductRepository interface {
 	GetRecipesByProductID(productID uint) ([]Recipe, error)
 	ClearRecipes(productID uint) error
 
-	// Preparation Log
-	CreatePreparationLog(log *PreparationLog) error
-	ListPreparationLogs(tenantID uint) ([]PreparationLog, error)
+	// Production Log
+	CreateProductionLog(log *ProductionLog) error
+	ListProductionLogs(tenantID uint) ([]ProductionLog, error)
 }
 
 type ProductUsecase interface {
 	CreateProduct(product *Product) error
 	GetProductByID(id uint, tenantID uint) (*Product, error)
 	ListProducts(tenantID uint) ([]Product, error)
+	UpdateProduct(product *Product) error
+	DeleteProduct(id uint, tenantID uint) error
 	SetRecipe(productID uint, tenantID uint, recipes []Recipe) error
 	PrepareProduct(productID uint, tenantID uint, pax int) error
-	ListPreparationLogs(tenantID uint) ([]PreparationLog, error)
+	ListProductionLogs(tenantID uint) ([]ProductionLog, error)
 }
