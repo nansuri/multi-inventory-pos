@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue';
 import DashboardLayout from '../layouts/DashboardLayout.vue';
 import api from '../api/axios';
 import { useConfigStore } from '../stores/config';
-import { LineChart, Calendar, DollarSign, Utensils, Search, ChevronDown, ChevronRight, User, Hash } from 'lucide-vue-next';
+import { LineChart, Calendar, DollarSign, Utensils, ChevronDown, ChevronRight, User } from 'lucide-vue-next';
 
 const logs = ref<any[]>([]);
 const totalRevenue = ref(0);

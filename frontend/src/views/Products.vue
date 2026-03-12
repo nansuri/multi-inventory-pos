@@ -5,7 +5,7 @@ import ConfirmModal from '../components/ConfirmModal.vue';
 import FormModal from '../components/FormModal.vue';
 import ViewToggle from '../components/ViewToggle.vue';
 import api from '../api/axios';
-import { ChefHat, History, Package, AlertCircle, Trash2, ArrowRight } from 'lucide-vue-next';
+import { ChefHat, History, AlertCircle, Trash2 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import { useConfigStore } from '../stores/config';
 

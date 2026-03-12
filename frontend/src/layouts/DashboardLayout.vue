@@ -19,6 +19,8 @@ import {
   Utensils,
   Users,
   LineChart
+  LineChart,
+  HelpCircle
 } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
 
@@ -73,6 +75,13 @@ const navItems = computed<NavItem[]>(() => {
       name: t('common.dashboard'), 
       path: '/', 
       icon: LayoutDashboard,
+      permission: 'dashboard'
+    },
+    { 
+      type: 'item',
+      name: 'System Guide', 
+      path: '/guide', 
+      icon: HelpCircle,
       permission: 'dashboard'
     },
     {
@@ -136,8 +145,6 @@ const languages = [
   { code: 'id', name: 'ID' },
   { code: 'ja', name: 'JA' }
 ];
-
-const isItemActive = (path: string) => route.path === path;
 </script>
 
 <template>

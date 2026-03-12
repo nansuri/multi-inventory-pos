@@ -1,23 +1,6 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: inventory_db
-    environment:
-      POSTGRES_USER: ${DB_USER:-inventory_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-inventory_password}
-      POSTGRES_DB: ${DB_NAME:-inventory_db}
-    ports:
-      - "${DB_PORT:-5432}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-inventory_user} -d ${DB_NAME:-inventory_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   redis:
     image: redis:7-alpine
     container_name: inventory_redis
@@ -25,6 +8,8 @@ services:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - app-network
 
   backend:
     build:
@@ -32,17 +17,17 @@ services:
       dockerfile: Dockerfile
     container_name: inventory_backend
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "85:85"
     environment:
-      - DB_HOST=db
+      - DB_HOST=${DB_HOST}
       - REDIS_HOST=redis
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
+      - redis
+    networks:
+      - app-network
+      - dashboard_dashboard-network
 
   frontend:
     build:
@@ -50,12 +35,19 @@ services:
       dockerfile: Dockerfile
     container_name: inventory_frontend
     ports:
-      - "80:80"
+      - "8089:80"
     env_file:
       - .env
     depends_on:
       - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+  dashboard_dashboard-network:
+    external: true
 
 volumes:
-  postgres_data:
   redis_data:

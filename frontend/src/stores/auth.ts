@@ -1,11 +1,19 @@
 import { defineStore } from 'pinia';
 import api from '../api/axios';
 
+export interface Role {
+  id: number;
+  name: string;
+  permissions: string[];
+}
+
 export interface User {
   id: number;
   tenant_id: number;
   username: string;
-  role: string;
+  role_id?: number;
+  role?: Role;
+  is_owner: boolean;
 }
 
 export const useAuthStore = defineStore('auth', {
