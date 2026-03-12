@@ -18,7 +18,6 @@ import {
   CreditCard,
   Utensils,
   Users,
-  LineChart
   LineChart,
   HelpCircle
 } from 'lucide-vue-next';
