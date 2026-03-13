@@ -23,16 +23,16 @@ const isActive = computed(() => route.path === props.path);
     :class="[
       isCollapsed ? 'justify-center p-3' : 'px-4 py-3',
       isActive 
-        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' 
-        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-indigo-900/40' 
+        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
     ]"
   >
     <component 
       :is="icon" 
       :class="[
         'w-5 h-5 flex-shrink-0 transition-colors',
-        isActive ? 'text-white' : 'group-hover:text-slate-900',
-        isSubItem && !isActive ? 'text-slate-400' : ''
+        isActive ? 'text-white' : 'group-hover:text-slate-900 dark:group-hover:text-slate-100',
+        isSubItem && !isActive ? 'text-slate-400 dark:text-slate-500' : ''
       ]" 
     />
     
@@ -46,7 +46,7 @@ const isActive = computed(() => route.path === props.path);
     <!-- Tooltip for collapsed mode -->
     <div 
       v-if="isCollapsed"
-      class="absolute left-14 bg-slate-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-xl font-black uppercase tracking-widest"
+      class="absolute left-14 bg-slate-800 dark:bg-slate-700 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-xl font-black uppercase tracking-widest"
     >
       {{ name }}
     </div>

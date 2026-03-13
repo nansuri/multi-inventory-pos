@@ -5,6 +5,7 @@ import i18n from '../i18n';
 export const useConfigStore = defineStore('config', {
   state: () => ({
     language: localStorage.getItem('language') || 'en',
+    theme: localStorage.getItem('theme') || 'light',
     currency: 'USD',
     tenantName: '',
     loading: false
@@ -39,6 +40,21 @@ export const useConfigStore = defineStore('config', {
       this.language = lang;
       localStorage.setItem('language', lang);
       (i18n.global.locale as any).value = lang;
+    },
+    toggleTheme() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', this.theme);
+      this.applyTheme();
+    },
+    initTheme() {
+      this.applyTheme();
+    },
+    applyTheme() {
+      if (this.theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     },
     formatCurrency(amount: number) {
       return new Intl.NumberFormat(this.language === 'id' ? 'id-ID' : this.language === 'ja' ? 'ja-JP' : 'en-US', {

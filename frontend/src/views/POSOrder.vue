@@ -122,7 +122,7 @@ const placeOrder = async () => {
     
     showAlert(
       t('common.success'), 
-      `Order for ${customerName.value} at T-${selectedTable.value.table_number} placed.`, 
+      `${t('pos.orderPlaced')} ${customerName.value} (T-${selectedTable.value.table_number}).`, 
       "success",
       t('common.confirm'),
       () => {
@@ -152,8 +152,8 @@ onMounted(fetchInitialData);
         <!-- Tables Selection -->
         <section>
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
-              <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+            <h3 class="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
+              <div class="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
                 <Users class="w-5 h-5" />
               </div>
               {{ t('pos.floorPlan') }}
@@ -168,19 +168,19 @@ onMounted(fetchInitialData);
               :class="[
                 'p-6 rounded-[2rem] border-2 transition-all duration-300 relative group flex flex-col items-center justify-center gap-1',
                 table.status === 'occupied' 
-                  ? 'bg-slate-50 border-slate-100 cursor-not-allowed opacity-60' 
+                  ? 'bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 cursor-not-allowed opacity-60' 
                   : selectedTable?.id === table.id 
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200' 
-                    : 'bg-white border-slate-100 hover:border-indigo-300 hover:shadow-lg'
+                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200 dark:shadow-none' 
+                    : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-lg'
               ]"
               :disabled="table.status === 'occupied'"
             >
-              <span class="text-sm font-black uppercase tracking-tighter" :class="selectedTable?.id === table.id ? 'text-indigo-100' : 'text-slate-400'">{{ t('common.table') }}</span>
-              <span class="text-2xl font-black">{{ table.table_number }}</span>
+              <span class="text-sm font-black uppercase tracking-tighter transition-colors" :class="selectedTable?.id === table.id ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-500'">{{ t('common.table') }}</span>
+              <span class="text-2xl font-black transition-colors" :class="selectedTable?.id === table.id ? 'text-white' : 'text-slate-800 dark:text-slate-100'">{{ table.table_number }}</span>
               <div class="mt-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider" 
                 :class="[
-                  table.status === 'occupied' ? 'bg-orange-100 text-orange-600' : 
-                  selectedTable?.id === table.id ? 'bg-indigo-500 text-white' : 'bg-green-50 text-green-600'
+                  table.status === 'occupied' ? 'bg-orange-100 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400' : 
+                  selectedTable?.id === table.id ? 'bg-indigo-500 text-white' : 'bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400'
                 ]"
               >
                 {{ table.status }}
@@ -189,7 +189,7 @@ onMounted(fetchInitialData);
             
             <button 
               @click="isAddTableModalOpen = true"
-              class="p-6 rounded-[2rem] border-4 border-dashed border-slate-100 flex flex-col items-center justify-center text-slate-300 hover:text-indigo-500 hover:border-indigo-200 transition-all group"
+              class="p-6 rounded-[2rem] border-4 border-dashed border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-slate-300 dark:text-slate-700 hover:text-indigo-500 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-900 transition-all group"
             >
               <Plus class="w-8 h-8 group-hover:scale-110 transition-transform" />
               <span class="text-[10px] font-black uppercase tracking-widest mt-2">{{ t('pos.newTable') }}</span>
@@ -200,8 +200,8 @@ onMounted(fetchInitialData);
         <!-- Product Selection -->
         <section v-if="selectedTable" class="animate-in slide-in-from-bottom-4 duration-500 pb-10">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
-              <div class="p-2 bg-orange-100 text-orange-600 rounded-lg">
+            <h3 class="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
+              <div class="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg">
                 <UtensilsCrossed class="w-5 h-5" />
               </div>
               {{ t('pos.availableMenu') }}
@@ -213,29 +213,29 @@ onMounted(fetchInitialData);
               v-for="product in products" 
               :key="product.id"
               @click="addToCart(product)"
-              class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 text-left group flex flex-col relative overflow-hidden"
+              class="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 text-left group flex flex-col relative overflow-hidden"
               :disabled="product.stock <= 0"
               :class="product.stock <= 0 ? 'opacity-50 grayscale' : ''"
             >
               <div class="flex justify-between items-start mb-4">
-                <div class="p-3 bg-slate-50 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <ChefHat class="w-6 h-6" />
+                <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                  <ChefHat class="w-6 h-6 dark:text-slate-400 group-hover:text-white" />
                 </div>
                 <span 
                   :class="[
                     'text-[10px] px-2 py-1 rounded-lg font-black uppercase tracking-wider border',
-                    product.stock <= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'
+                    product.stock <= 0 ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-100 dark:border-red-900/50' : 'bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 border-green-100 dark:border-green-900/50'
                   ]"
                 >
                   {{ product.stock > 0 ? product.stock + ' ' + t('pos.ready') : t('pos.out') }}
                 </span>
               </div>
               
-              <h4 class="font-black text-slate-800 text-lg leading-tight mb-4">{{ product.name }}</h4>
+              <h4 class="font-black text-slate-800 dark:text-slate-100 text-lg leading-tight mb-4">{{ product.name }}</h4>
               
               <div class="mt-auto flex items-center justify-between">
-                <span class="text-xl font-black text-indigo-600">{{ configStore.formatCurrency(product.price) }}</span>
-                <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all scale-0 group-hover:scale-100">
+                <span class="text-xl font-black text-indigo-600 dark:text-indigo-400">{{ configStore.formatCurrency(product.price) }}</span>
+                <div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all scale-0 group-hover:scale-100">
                   <Plus class="w-5 h-5 font-black" />
                 </div>
               </div>
@@ -243,15 +243,15 @@ onMounted(fetchInitialData);
           </div>
         </section>
         
-        <div v-else class="h-64 flex flex-col items-center justify-center text-slate-300 border-4 border-dashed border-slate-100 rounded-[3rem]">
+        <div v-else class="h-64 flex flex-col items-center justify-center text-slate-300 dark:text-slate-800 border-4 border-dashed border-slate-100 dark:border-slate-900 rounded-[3rem]">
           <Users class="w-16 h-16 mb-4 opacity-20" />
           <p class="font-black text-lg opacity-40 uppercase tracking-widest">{{ t('pos.selectTable') }}</p>
         </div>
       </div>
 
       <!-- Right Panel: Order Setup -->
-      <div class="w-full lg:w-[400px] bg-white rounded-[3rem] shadow-2xl shadow-slate-200 border border-slate-100 flex flex-col overflow-hidden relative">
-        <div class="p-8 bg-slate-900 text-white">
+      <div class="w-full lg:w-[400px] bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-100 dark:border-slate-800 flex flex-col overflow-hidden relative">
+        <div class="p-8 bg-slate-900 dark:bg-slate-950 text-white">
           <div class="flex justify-between items-center mb-8">
             <h3 class="font-black text-xl flex items-center gap-3">
               <ShoppingCart class="w-6 h-6 text-indigo-400" />
@@ -287,40 +287,40 @@ onMounted(fetchInitialData);
         </div>
 
         <!-- Cart Items -->
-        <div class="flex-1 overflow-auto p-8 space-y-6 custom-scrollbar">
+        <div class="flex-1 overflow-auto p-8 space-y-6 custom-scrollbar dark:bg-slate-900">
           <div v-for="(item, index) in cart" :key="index" class="flex items-start gap-4">
-            <div class="flex flex-col items-center gap-1 bg-slate-50 rounded-xl p-1 border border-slate-100">
-              <button @click="addToCart({id: item.product_id, name: item.name, price: item.price})" class="p-1 hover:text-indigo-600 transition-colors">
+            <div class="flex flex-col items-center gap-1 bg-slate-50 dark:bg-slate-800 rounded-xl p-1 border border-slate-100 dark:border-slate-700">
+              <button @click="addToCart({id: item.product_id, name: item.name, price: item.price})" class="p-1 hover:text-indigo-600 dark:text-slate-400 transition-colors">
                 <Plus class="w-3 h-3" />
               </button>
-              <span class="text-sm font-black text-slate-800 w-6 text-center">{{ item.quantity }}</span>
-              <button @click="removeFromCart(index)" class="p-1 hover:text-red-600 transition-colors">
+              <span class="text-sm font-black text-slate-800 dark:text-slate-100 w-6 text-center">{{ item.quantity }}</span>
+              <button @click="removeFromCart(index)" class="p-1 hover:text-red-600 dark:text-slate-400 transition-colors">
                 <Minus class="w-3 h-3" />
               </button>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="font-bold text-slate-800 truncate text-sm">{{ item.name }}</p>
-              <p class="text-[10px] font-black text-slate-400 uppercase">{{ configStore.formatCurrency(item.price) }}</p>
+              <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-sm">{{ item.name }}</p>
+              <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase">{{ configStore.formatCurrency(item.price) }}</p>
             </div>
-            <p class="font-black text-slate-800 text-sm">{{ configStore.formatCurrency(item.price * item.quantity) }}</p>
+            <p class="font-black text-slate-800 dark:text-slate-100 text-sm">{{ configStore.formatCurrency(item.price * item.quantity) }}</p>
           </div>
 
-          <div v-if="cart.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200 py-10">
+          <div v-if="cart.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200 dark:text-slate-800 py-10">
             <ShoppingCart class="w-16 h-16 mb-4 opacity-10" />
-            <p class="font-black uppercase tracking-widest text-[10px] opacity-30 text-slate-400">{{ t('pos.cartEmpty') }}</p>
+            <p class="font-black uppercase tracking-widest text-[10px] opacity-30 text-slate-400 dark:text-slate-600">{{ t('pos.cartEmpty') }}</p>
           </div>
         </div>
 
-        <div class="p-8 border-t-2 border-dashed border-slate-100 bg-slate-50/50">
+        <div class="p-8 border-t-2 border-dashed border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900">
           <div class="flex justify-between items-center mb-6">
-            <span class="text-slate-800 font-black text-lg">{{ t('common.total') }}</span>
-            <span class="text-3xl font-black text-indigo-600">{{ configStore.formatCurrency(totalPrice()) }}</span>
+            <span class="text-slate-800 dark:text-slate-400 font-black text-lg">{{ t('common.total') }}</span>
+            <span class="text-3xl font-black text-indigo-600 dark:text-indigo-400">{{ configStore.formatCurrency(totalPrice()) }}</span>
           </div>
           
           <button 
             @click="placeOrder"
             :disabled="!selectedTable || cart.length === 0 || actionLoading"
-            class="w-full bg-slate-900 text-white py-5 rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-indigo-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl shadow-slate-200 group"
+            class="w-full bg-slate-900 dark:bg-indigo-600 text-white py-5 rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-indigo-600 dark:hover:bg-indigo-700 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl shadow-slate-200 dark:shadow-none group"
           >
             <span v-if="actionLoading" class="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
             <CheckCircle v-else class="w-6 h-6 text-green-400 group-hover:text-white transition-colors" />
@@ -331,21 +331,21 @@ onMounted(fetchInitialData);
     </div>
 
     <!-- Add Table Modal -->
-    <div v-if="isAddTableModalOpen" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 shadow-2xl scale-in-center">
-        <h3 class="text-2xl font-black text-slate-800 mb-2">{{ t('pos.newTable') }}</h3>
+    <div v-if="isAddTableModalOpen" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-sm p-10 shadow-2xl scale-in-center border border-slate-100 dark:border-slate-800">
+        <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100 mb-2">{{ t('pos.newTable') }}</h3>
         <form @submit.prevent="addTable" class="space-y-6">
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('pos.tableIdentifier') }}</label>
-            <input v-model="newTable.table_number" type="text" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
+            <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('pos.tableIdentifier') }}</label>
+            <input v-model="newTable.table_number" type="text" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none dark:text-slate-100" />
           </div>
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('pos.seatingCapacity') }}</label>
-            <input v-model.number="newTable.capacity" type="number" min="1" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
+            <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('pos.seatingCapacity') }}</label>
+            <input v-model.number="newTable.capacity" type="number" min="1" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none dark:text-slate-100" />
           </div>
           <div class="flex flex-col gap-2">
-            <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black">{{ t('common.save') }}</button>
-            <button type="button" @click="isAddTableModalOpen = false" class="w-full py-4 text-slate-400 font-bold">{{ t('common.cancel') }}</button>
+            <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-100 dark:shadow-none transition-all">{{ t('common.save') }}</button>
+            <button type="button" @click="isAddTableModalOpen = false" class="w-full py-4 text-slate-400 dark:text-slate-500 font-bold">{{ t('common.cancel') }}</button>
           </div>
         </form>
       </div>
@@ -371,6 +371,9 @@ onMounted(fetchInitialData);
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: var(--color-slate-200);
   border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-slate-800);
 }
 .scale-in-center {
   animation: scale-in-center 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;

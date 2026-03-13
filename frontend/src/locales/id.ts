@@ -160,7 +160,8 @@ export default {
     allClear: "Semua beres!",
     billDetails: "Detail Tagihan",
     selectBillDesc: "Pilih tagihan aktif untuk melihat detail dan memproses pembayaran",
-    successPayment: "Pesanan telah dibayar dan inventaris diperbarui."
+    successPayment: "Pesanan telah dibayar dan inventaris diperbarui.",
+    orderPlaced: "Pesanan dibuat untuk"
   },
   reports: {
     title: "Riwayat Keuangan",
@@ -205,7 +206,19 @@ export default {
     dataIsolation: "Isolasi Data",
     roleControl: "Kontrol Peran",
     stockTracking: "Pelacakan Stok",
-    paymentFlow: "Alur Pembayaran"
+    paymentFlow: "Alur Pembayaran",
+    step1Desc: "Mulailah dengan menambahkan bahan baku Anda (misalnya: Beras, Daging, Minyak). Tentukan satuannya (KG, GR, Liter) dan atur peringatan stok minimum untuk menghindari kehabisan.",
+    step1Usage: "Buka Dapur & Gudang > Inventaris.",
+    step2Desc: "Buat \"Cetak Biru\" untuk masakan Anda. Hubungkan bahan baku ke item menu dan tentukan dengan tepat berapa banyak masing-masing bahan yang dibutuhkan untuk 1 porsi.",
+    step2Usage: "Buka Dapur & Gudang > Manajemen Resep.",
+    step3Desc: "Ketika Koki memasak batch, catat di sini. Sistem secara otomatis memotong bahan baku dari Inventaris dan menambah stok \"Siap Jual\".",
+    step3Usage: "Buka Dapur & Gudang > Aula Produksi.",
+    step4Desc: "Pelayan memilih meja dan menambahkan produk matang ke keranjang. Ini menandai meja sebagai \"Terisi\" dan menyiapkan tagihan.",
+    step4Usage: "Buka Penjualan & Lantai > Pesanan Baru.",
+    step5Desc: "Ketika pelanggan siap untuk pergi, proses pembayarannya. Ini memfinalisasi pesanan, memotong stok produk matang, dan membebaskan meja.",
+    step5Usage: "Buka Penjualan & Lantai > Pembayaran.",
+    step6Desc: "Pantau pendapatan harian, tren pesanan, dan riwayat produksi. Gunakan wawasan ini untuk mengoptimalkan stok dan harga menu Anda.",
+    step6Usage: "Cek Dasbor atau Administrasi > Riwayat Pesanan."
   },
   settings: {
     title: "Pengaturan Akun & Tenant",

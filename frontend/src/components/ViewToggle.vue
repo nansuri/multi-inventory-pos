@@ -1,30 +1,38 @@
 <script setup lang="ts">
-import { LayoutList, LayoutGrid } from 'lucide-vue-next';
+import { LayoutGrid, List } from 'lucide-vue-next';
 
 defineProps<{
-  mode: 'list' | 'grid'
+  mode: 'list' | 'grid';
 }>();
 
-const emit = defineEmits(['update:mode']);
+defineEmits(['update:mode']);
 </script>
 
 <template>
-  <div class="flex items-center bg-white border border-slate-200 p-1 rounded-xl shadow-sm">
+  <div class="flex items-center bg-white dark:bg-slate-900 p-1 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm h-[60px]">
     <button 
-      @click="emit('update:mode', 'list')"
-      class="p-2 rounded-lg transition-all flex items-center gap-2"
-      :class="mode === 'list' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'"
+      @click="$emit('update:mode', 'list')"
+      :class="[
+        'flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-black text-xs uppercase tracking-widest',
+        mode === 'list' 
+          ? 'bg-slate-900 dark:bg-indigo-600 text-white shadow-lg' 
+          : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+      ]"
     >
-      <LayoutList class="w-4 h-4" />
-      <span v-if="mode === 'list'" class="text-[10px] font-black uppercase tracking-widest pr-1">List</span>
+      <List class="w-4 h-4" />
+      <span class="hidden sm:inline">List</span>
     </button>
     <button 
-      @click="emit('update:mode', 'grid')"
-      class="p-2 rounded-lg transition-all flex items-center gap-2"
-      :class="mode === 'grid' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'"
+      @click="$emit('update:mode', 'grid')"
+      :class="[
+        'flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-black text-xs uppercase tracking-widest',
+        mode === 'grid' 
+          ? 'bg-slate-900 dark:bg-indigo-600 text-white shadow-lg' 
+          : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+      ]"
     >
       <LayoutGrid class="w-4 h-4" />
-      <span v-if="mode === 'grid'" class="text-[10px] font-black uppercase tracking-widest pr-1">Grid</span>
+      <span class="hidden sm:inline">Grid</span>
     </button>
   </div>
 </template>

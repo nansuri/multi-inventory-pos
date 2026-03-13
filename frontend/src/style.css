@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: var(--color-indigo-600);
   --color-primary-hover: var(--color-indigo-700);
@@ -10,6 +12,11 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--color-slate-50);
   color: var(--color-slate-900);
+}
+
+html.dark {
+  background-color: var(--color-slate-950);
+  color: var(--color-slate-100);
 }
 
 body {
@@ -34,14 +41,27 @@ body {
   border-radius: 10px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-slate-700);
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-slate-400);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-600);
 }
 
 .glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-hover {
@@ -51,4 +71,8 @@ body {
 .card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5);
 }

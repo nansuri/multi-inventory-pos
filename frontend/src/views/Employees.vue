@@ -74,20 +74,20 @@ onMounted(fetchEmployees);
     <div class="space-y-8 animate-in fade-in duration-500">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+          <h1 class="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
             <Users class="w-8 h-8 text-indigo-600" />
             {{ t('employees.title') }}
           </h1>
-          <p class="text-slate-500 font-medium mt-1">{{ t('employees.desc') }}</p>
+          <p class="text-slate-500 dark:text-slate-400 font-medium mt-1">{{ t('employees.desc') }}</p>
         </div>
         <div class="flex gap-3">
-          <router-link to="/roles" class="bg-white border border-slate-200 text-slate-700 px-6 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
-            <Shield class="w-5 h-5 text-slate-400" />
+          <router-link to="/roles" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 px-6 py-4 rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-sm flex items-center gap-2">
+            <Shield class="w-5 h-5 text-slate-400 dark:text-slate-500" />
             {{ t('employees.manageRoles') }}
           </router-link>
           <button 
             @click="isAddModalOpen = true"
-            class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2"
+            class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-indigo-100 dark:shadow-indigo-900/30 hover:bg-indigo-700 transition-all flex items-center gap-2"
           >
             <UserPlus class="w-5 h-5" />
             {{ t('employees.addEmployee') }}
@@ -95,38 +95,38 @@ onMounted(fetchEmployees);
         </div>
       </div>
 
-      <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50/50 border-b border-slate-100">
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ t('employees.username') }}</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ t('employees.assignedRole') }}</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{{ t('common.actions') }}</th>
+            <tr class="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ t('employees.username') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ t('employees.assignedRole') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">{{ t('common.actions') }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-50">
-            <tr v-for="emp in employees" :key="emp.id" class="group hover:bg-slate-50/30 transition-colors">
+          <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+            <tr v-for="emp in employees" :key="emp.id" class="group hover:bg-slate-50/30 dark:hover:bg-slate-800/30 transition-colors">
               <td class="px-8 py-6">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">
                     {{ emp.username.charAt(0).toUpperCase() }}
                   </div>
-                  <span class="font-bold text-slate-800">{{ emp.username }}</span>
+                  <span class="font-bold text-slate-800 dark:text-slate-100">{{ emp.username }}</span>
                 </div>
               </td>
               <td class="px-8 py-6">
-                <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-lg border border-indigo-100">
+                <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase rounded-lg border border-indigo-100 dark:border-indigo-900/50">
                   {{ emp.role?.name || 'No Role' }}
                 </span>
               </td>
               <td class="px-8 py-6 text-right">
-                <button @click="selectedEmployee = emp; isDeleteModalOpen = true" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
+                <button @click="selectedEmployee = emp; isDeleteModalOpen = true" class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-all">
                   <Trash2 class="w-5 h-5" />
                 </button>
               </td>
             </tr>
             <tr v-if="employees.length === 0 && !loading">
-              <td colspan="3" class="px-8 py-20 text-center text-slate-400 italic">{{ t('common.noData') }}</td>
+              <td colspan="3" class="px-8 py-20 text-center text-slate-400 dark:text-slate-600 italic font-medium">{{ t('common.noData') }}</td>
             </tr>
           </tbody>
         </table>
@@ -145,22 +145,22 @@ onMounted(fetchEmployees);
     >
       <div class="space-y-6">
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('employees.username') }}</label>
+          <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('employees.username') }}</label>
           <div class="relative">
-            <input v-model="employeeForm.username" type="text" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none pl-12" />
-            <Mail class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+            <input v-model="employeeForm.username" type="text" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none pl-12 dark:text-slate-100" />
+            <Mail class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 dark:text-slate-600" />
           </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('employees.tempPassword') }}</label>
+          <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('employees.tempPassword') }}</label>
           <div class="relative">
-            <input v-model="employeeForm.password" type="password" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none pl-12" />
-            <Key class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+            <input v-model="employeeForm.password" type="password" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none pl-12 dark:text-slate-100" />
+            <Key class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 dark:text-slate-600" />
           </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('employees.assignRole') }}</label>
-          <select v-model="employeeForm.role_id" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none appearance-none">
+          <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('employees.assignRole') }}</label>
+          <select v-model="employeeForm.role_id" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none appearance-none dark:text-slate-100">
             <option :value="null" disabled>{{ t('employees.assignRole') }}...</option>
             <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
           </select>

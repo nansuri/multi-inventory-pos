@@ -51,20 +51,20 @@ onMounted(fetchHistory);
     <div class="space-y-10 animate-in fade-in duration-500">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+          <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
             <LineChart class="w-10 h-10 text-indigo-600" />
             {{ t('reports.title') }}
           </h1>
-          <p class="text-slate-500 font-medium mt-1">{{ t('reports.desc') }}</p>
+          <p class="text-slate-500 dark:text-slate-400 font-medium mt-1">{{ t('reports.desc') }}</p>
         </div>
 
-        <div class="flex items-center bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
+        <div class="flex items-center bg-white dark:bg-slate-900 p-1.5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <button 
             v-for="p in ['day', 'week', 'month']" 
             :key="p"
             @click="period = p"
             class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-            :class="period === p ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-400 hover:text-slate-600'"
+            :class="period === p ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'"
           >
             {{ t(`common.${p}`) }}
           </button>
@@ -73,96 +73,96 @@ onMounted(fetchHistory);
 
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col justify-between relative overflow-hidden group">
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col justify-between relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-10 opacity-5">
             <DollarSign class="w-32 h-32 text-indigo-600" />
           </div>
           <div class="flex items-center justify-between mb-6">
-            <div class="p-4 bg-green-50 rounded-2xl text-green-600 font-black">
+            <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl text-green-600 dark:text-green-400 font-black">
               <DollarSign class="w-8 h-8" />
             </div>
           </div>
           <div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">{{ t('reports.totalRevenue') }} ({{ t(`common.${period}`) }})</p>
-            <p class="text-5xl font-black text-slate-800">{{ configStore.formatCurrency(totalRevenue) }}</p>
+            <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-2">{{ t('reports.totalRevenue') }} ({{ t(`common.${period}`) }})</p>
+            <p class="text-5xl font-black text-slate-800 dark:text-slate-100">{{ configStore.formatCurrency(totalRevenue) }}</p>
           </div>
         </div>
 
-        <div class="bg-indigo-900 p-8 rounded-[2.5rem] shadow-xl text-white flex flex-col justify-between relative overflow-hidden group">
+        <div class="bg-indigo-900 dark:bg-indigo-950 p-8 rounded-[2.5rem] shadow-xl text-white flex flex-col justify-between relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-10 opacity-10">
             <Utensils class="w-32 h-32" />
           </div>
           <div class="flex items-center justify-between mb-6">
-            <div class="p-4 bg-white/10 rounded-2xl text-white font-black border border-white/10">
+            <div class="p-4 bg-white/10 dark:bg-white/5 rounded-2xl text-white font-black border border-white/10 dark:border-white/5">
               <Utensils class="w-8 h-8" />
             </div>
           </div>
           <div>
-            <p class="text-xs font-bold text-indigo-300 uppercase tracking-[0.2em] mb-2">{{ t('reports.ordersCompleted') }}</p>
+            <p class="text-xs font-bold text-indigo-300 dark:text-indigo-400 uppercase tracking-[0.2em] mb-2">{{ t('reports.ordersCompleted') }}</p>
             <p class="text-5xl font-black">{{ orderCount }}</p>
           </div>
         </div>
       </div>
 
       <!-- Detailed Table -->
-      <div class="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 rounded-[3rem] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50/50 border-b border-slate-100">
+            <tr class="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
               <th class="w-10 px-4 py-6"></th>
-              <th class="px-4 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ t('reports.transaction') }}</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ t('reports.customer') }}</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">{{ t('reports.table') }}</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">{{ t('reports.amount') }}</th>
+              <th class="px-4 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">{{ t('reports.transaction') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">{{ t('reports.customer') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-center">{{ t('reports.table') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] text-right">{{ t('reports.amount') }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-50">
+          <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
             <template v-for="order in logs" :key="order.id">
               <tr 
-                class="group hover:bg-slate-50/30 transition-colors cursor-pointer"
+                class="group hover:bg-slate-50/30 dark:hover:bg-slate-800/30 transition-colors cursor-pointer"
                 @click="toggleExpand(order.id)"
               >
                 <td class="px-4 py-6 text-center">
-                  <component :is="expandedOrders[order.id] ? ChevronDown : ChevronRight" class="w-4 h-4 text-slate-300 group-hover:text-indigo-50" />
+                  <component :is="expandedOrders[order.id] ? ChevronDown : ChevronRight" class="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-indigo-50 transition-colors" />
                 </td>
                 <td class="px-4 py-6">
                   <div class="flex items-center gap-3">
-                    <div class="p-2 bg-slate-100 rounded-lg text-slate-400">
+                    <div class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500">
                       <Calendar class="w-4 h-4" />
                     </div>
                     <div class="flex flex-col">
-                      <span class="font-bold text-slate-700 text-sm">{{ formatDate(order.created_at).date }}</span>
-                      <span class="text-[10px] font-black text-slate-400 uppercase">{{ formatDate(order.created_at).time }}</span>
+                      <span class="font-bold text-slate-700 dark:text-slate-200 text-sm">{{ formatDate(order.created_at).date }}</span>
+                      <span class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase">{{ formatDate(order.created_at).time }}</span>
                     </div>
                   </div>
                 </td>
                 <td class="px-8 py-6">
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                    <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500">
                       <User class="w-4 h-4" />
                     </div>
-                    <span class="font-black text-slate-800 tracking-tight">{{ order.customer_name }}</span>
+                    <span class="font-black text-slate-800 dark:text-slate-100 tracking-tight">{{ order.customer_name }}</span>
                   </div>
                 </td>
                 <td class="px-8 py-6 text-center">
-                  <span class="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase rounded-lg">T-{{ order.table?.table_number }}</span>
+                  <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase rounded-lg">T-{{ order.table?.table_number }}</span>
                 </td>
                 <td class="px-8 py-6 text-right">
-                  <span class="font-black text-slate-800">{{ configStore.formatCurrency(order.total_price) }}</span>
+                  <span class="font-black text-slate-800 dark:text-slate-100">{{ configStore.formatCurrency(order.total_price) }}</span>
                 </td>
               </tr>
 
-              <tr v-if="expandedOrders[order.id]" class="bg-slate-50/50 animate-in slide-in-from-top-2 duration-200">
+              <tr v-if="expandedOrders[order.id]" class="bg-slate-50/50 dark:bg-slate-800/20 animate-in slide-in-from-top-2 duration-200">
                 <td colspan="5" class="px-20 py-8">
-                  <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 max-w-xl">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">{{ t('reports.orderItems') }}</p>
+                  <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 max-w-xl">
+                    <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">{{ t('reports.orderItems') }}</p>
                     <div class="space-y-3">
                       <div v-for="item in order.items" :key="item.id" class="flex justify-between items-center text-sm">
                         <div class="flex items-center gap-3">
-                          <span class="font-black text-indigo-600 bg-indigo-50 w-6 h-6 flex items-center justify-center rounded text-[10px]">{{ item.quantity }}x</span>
-                          <span class="font-bold text-slate-700">{{ item.product?.name }}</span>
+                          <span class="font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 w-6 h-6 flex items-center justify-center rounded text-[10px]">{{ item.quantity }}x</span>
+                          <span class="font-bold text-slate-700 dark:text-slate-200">{{ item.product?.name }}</span>
                         </div>
-                        <span class="font-black text-slate-800">{{ configStore.formatCurrency(item.price * item.quantity) }}</span>
+                        <span class="font-black text-slate-800 dark:text-slate-100">{{ configStore.formatCurrency(item.price * item.quantity) }}</span>
                       </div>
                     </div>
                   </div>
@@ -172,9 +172,9 @@ onMounted(fetchHistory);
 
             <tr v-if="logs.length === 0 && !loading">
               <td colspan="5" class="px-8 py-32 text-center">
-                <div class="flex flex-col items-center gap-4 opacity-20">
-                  <LineChart class="w-20 h-20 text-slate-400" />
-                  <p class="text-xl font-black text-slate-500 uppercase tracking-[0.2em]">{{ t('common.noData') }}</p>
+                <div class="flex flex-col items-center gap-4 opacity-20 dark:opacity-10">
+                  <LineChart class="w-20 h-20 text-slate-400 dark:text-slate-600" />
+                  <p class="text-xl font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em]">{{ t('common.noData') }}</p>
                 </div>
               </td>
             </tr>

@@ -67,13 +67,13 @@ onMounted(fetchOrders);
       <!-- Orders List -->
       <div class="flex-1 space-y-6 overflow-auto pr-2 custom-scrollbar">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
-            <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+          <h3 class="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
+            <div class="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
               <CreditCard class="w-5 h-5" />
             </div>
             {{ t('pos.activeBills') }}
           </h3>
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ orders.length }} {{ t('pos.pendingPayments') }}</span>
+          <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ orders.length }} {{ t('pos.pendingPayments') }}</span>
         </div>
 
         <div v-if="orders.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,16 +84,16 @@ onMounted(fetchOrders);
             :class="[
               'p-6 rounded-[2.5rem] border-2 text-left transition-all duration-300 group relative overflow-hidden',
               selectedOrder?.id === order.id 
-                ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200' 
-                : 'bg-white border-slate-100 hover:border-indigo-300'
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200 dark:shadow-none' 
+                : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500'
             ]"
           >
             <div class="flex justify-between items-start mb-4">
               <div :class="[
                 'p-3 rounded-2xl transition-colors',
-                selectedOrder?.id === order.id ? 'bg-indigo-500' : 'bg-slate-50'
+                selectedOrder?.id === order.id ? 'bg-indigo-500' : 'bg-slate-50 dark:bg-slate-800'
               ]">
-                <Users class="w-6 h-6" :class="selectedOrder?.id === order.id ? 'text-white' : 'text-indigo-600'" />
+                <Users class="w-6 h-6" :class="selectedOrder?.id === order.id ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'" />
               </div>
               <div class="text-right">
                 <p class="text-[10px] font-black uppercase opacity-60">{{ t('common.table') }}</p>
@@ -116,7 +116,7 @@ onMounted(fetchOrders);
               <span class="text-lg font-black">{{ configStore.formatCurrency(order.total_price) }}</span>
               <div :class="[
                 'w-8 h-8 rounded-full flex items-center justify-center transition-all',
-                selectedOrder?.id === order.id ? 'bg-white text-indigo-600' : 'bg-indigo-50 text-indigo-600 opacity-0 group-hover:opacity-100'
+                selectedOrder?.id === order.id ? 'bg-white text-indigo-600' : 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100'
               ]">
                 <ArrowRight class="w-4 h-4" />
               </div>
@@ -124,16 +124,16 @@ onMounted(fetchOrders);
           </button>
         </div>
 
-        <div v-else class="h-64 flex flex-col items-center justify-center text-slate-300 border-4 border-dashed border-slate-100 rounded-[3rem]">
+        <div v-else class="h-64 flex flex-col items-center justify-center text-slate-300 dark:text-slate-800 border-4 border-dashed border-slate-100 dark:border-slate-900 rounded-[3rem]">
           <CreditCard class="w-16 h-16 mb-4 opacity-20" />
           <p class="font-black text-lg opacity-40 uppercase tracking-widest text-center px-10">{{ t('pos.noBills') }}<br><span class="text-xs font-medium">{{ t('pos.allClear') }}</span></p>
         </div>
       </div>
 
       <!-- Payment Summary Panel -->
-      <div class="w-full lg:w-[400px] bg-white rounded-[3rem] shadow-2xl shadow-slate-200 border border-slate-100 flex flex-col overflow-hidden">
+      <div class="w-full lg:w-[400px] bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-100 dark:border-slate-800 flex flex-col overflow-hidden">
         <div v-if="selectedOrder" class="flex flex-col h-full animate-in slide-in-from-right-4 duration-300">
-          <div class="p-8 bg-slate-900 text-white">
+          <div class="p-8 bg-slate-900 dark:bg-slate-950 text-white">
             <h3 class="font-black text-xl flex items-center gap-3 mb-8">
               <CreditCard class="w-6 h-6 text-indigo-400" />
               {{ t('pos.billDetails') }}
@@ -143,29 +143,29 @@ onMounted(fetchOrders);
                 <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest mb-1">{{ t('common.customer') }}</p>
                 <p class="text-lg font-black truncate">{{ selectedOrder.customer_name }}</p>
               </div>
-              <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
-                <p class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">{{ t('common.table') }}</p>
+              <div class="bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 rounded-2xl p-4">
+                <p class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-600 tracking-widest mb-1">{{ t('common.table') }}</p>
                 <p class="text-lg font-black">{{ selectedOrder.table?.table_number }}</p>
               </div>
             </div>
           </div>
 
-          <div class="flex-1 overflow-auto p-8 space-y-6 custom-scrollbar">
+          <div class="flex-1 overflow-auto p-8 space-y-6 custom-scrollbar dark:bg-slate-900">
             <div v-for="item in selectedOrder.items" :key="item.id" class="flex justify-between items-center">
               <div>
-                <p class="font-bold text-slate-800 text-sm">{{ item.product?.name }}</p>
-                <p class="text-[10px] font-black text-slate-400 uppercase">{{ configStore.formatCurrency(item.price) }} x {{ item.quantity }}</p>
+                <p class="font-bold text-slate-800 dark:text-slate-100 text-sm">{{ item.product?.name }}</p>
+                <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase">{{ configStore.formatCurrency(item.price) }} x {{ item.quantity }}</p>
               </div>
-              <p class="font-black text-slate-800 text-sm">{{ configStore.formatCurrency(item.price * item.quantity) }}</p>
+              <p class="font-black text-slate-800 dark:text-slate-100 text-sm">{{ configStore.formatCurrency(item.price * item.quantity) }}</p>
             </div>
           </div>
 
-          <div class="p-8 border-t-2 border-dashed border-slate-100 bg-slate-50/50">
+          <div class="p-8 border-t-2 border-dashed border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900">
             <div class="flex justify-between items-center mb-8">
-              <span class="text-slate-800 font-black text-lg">{{ t('pos.totalAmount') }}</span>
-              <span class="text-3xl font-black text-indigo-600">{{ configStore.formatCurrency(selectedOrder.total_price) }}</span>
+              <span class="text-slate-800 dark:text-slate-400 font-black text-lg">{{ t('pos.totalAmount') }}</span>
+              <span class="text-3xl font-black text-indigo-600 dark:text-indigo-400">{{ configStore.formatCurrency(selectedOrder.total_price) }}</span>
             </div>
-            <button @click="processPayment" :disabled="actionLoading" class="w-full bg-slate-900 text-white py-5 rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-xl shadow-slate-200 group">
+            <button @click="processPayment" :disabled="actionLoading" class="w-full bg-slate-900 dark:bg-indigo-600 text-white py-5 rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-xl shadow-slate-200 dark:shadow-none group">
               <span v-if="actionLoading" class="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
               <template v-else>
                 <CheckCircle class="w-6 h-6 text-green-400 group-hover:text-white transition-colors" />
@@ -175,11 +175,11 @@ onMounted(fetchOrders);
           </div>
         </div>
 
-        <div v-else class="h-full flex flex-col items-center justify-center text-slate-200 py-20 p-10 text-center">
-          <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6">
-            <ShoppingCart class="w-10 h-10 text-slate-200" />
+        <div v-else class="h-full flex flex-col items-center justify-center text-slate-200 dark:text-slate-800 py-20 p-10 text-center">
+          <div class="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center mb-6 border border-slate-100 dark:border-slate-700">
+            <ShoppingCart class="w-10 h-10 text-slate-200 dark:text-slate-700" />
           </div>
-          <p class="font-black uppercase tracking-widest text-[10px] text-slate-400">{{ t('pos.selectBillDesc') }}</p>
+          <p class="font-black uppercase tracking-widest text-[10px] text-slate-400 dark:text-slate-600">{{ t('pos.selectBillDesc') }}</p>
         </div>
       </div>
     </div>
@@ -203,5 +203,8 @@ onMounted(fetchOrders);
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: var(--color-slate-200);
   border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-slate-800);
 }
 </style>

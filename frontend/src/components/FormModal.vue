@@ -1,59 +1,40 @@
 <script setup lang="ts">
 import BaseModal from './BaseModal.vue';
-import type { LucideIcon } from 'lucide-vue-next';
 
-interface Props {
+defineProps<{
   show: boolean;
   title: string;
   subtitle?: string;
-  icon?: LucideIcon;
-  iconClass?: string;
-  maxWidth?: string;
-  submitText?: string;
-  cancelText?: string;
+  icon?: any;
   loading?: boolean;
-}
+  maxWidth?: string;
+}>();
 
-const props = withDefaults(defineProps<Props>(), {
-  maxWidth: 'max-w-lg',
-  submitText: 'Save Changes',
-  cancelText: 'Cancel',
-  loading: false
-});
-
-const emit = defineEmits(['submit', 'cancel']);
+defineEmits(['submit', 'cancel']);
 </script>
 
 <template>
-  <BaseModal :show="show" :maxWidth="maxWidth" @close="emit('cancel')">
-    <div class="p-10">
-      <div class="flex items-center gap-4 mb-8">
-        <div v-if="icon" :class="['p-4 rounded-2xl flex items-center justify-center', iconClass || 'bg-indigo-50 text-indigo-600']">
-          <component :is="icon" class="w-8 h-8" />
-        </div>
-        <div>
-          <h3 class="text-2xl font-black text-slate-800 leading-tight">{{ title }}</h3>
-          <p v-if="subtitle" class="text-sm font-medium text-slate-400 uppercase tracking-widest mt-1">{{ subtitle }}</p>
-        </div>
+  <BaseModal :show="show" :title="title" :subtitle="subtitle" :icon="icon" :maxWidth="maxWidth" @close="$emit('cancel')">
+    <form @submit.prevent="$emit('submit')" class="space-y-10">
+      <slot />
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-4">
+        <button 
+          type="submit" 
+          :disabled="loading"
+          class="flex-1 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black transition-all shadow-xl shadow-indigo-100 dark:shadow-indigo-900/20 disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          <span v-if="loading" class="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin"></span>
+          {{ $t('common.save') }}
+        </button>
+        <button 
+          type="button" 
+          @click="$emit('cancel')"
+          class="flex-1 py-5 text-slate-400 dark:text-slate-500 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 rounded-2xl transition-all"
+        >
+          {{ $t('common.cancel') }}
+        </button>
       </div>
-
-      <form @submit.prevent="emit('submit')" class="space-y-6">
-        <slot />
-
-        <div class="flex gap-4 pt-6 border-t border-slate-100">
-          <button type="button" @click="emit('cancel')" class="flex-1 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors">
-            {{ cancelText }}
-          </button>
-          <button 
-            type="submit" 
-            :disabled="loading"
-            class="flex-[2] py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
-          >
-            <span v-if="loading" class="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
-            {{ submitText }}
-          </button>
-        </div>
-      </form>
-    </div>
+    </form>
   </BaseModal>
 </template>

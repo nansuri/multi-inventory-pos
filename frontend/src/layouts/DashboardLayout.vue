@@ -19,7 +19,9 @@ import {
   Utensils,
   Users,
   LineChart,
-  HelpCircle
+  HelpCircle,
+  Sun,
+  Moon
 } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
 
@@ -147,21 +149,21 @@ const languages = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 flex font-sans text-slate-900">
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-950 flex font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300">
     <!-- Sidebar -->
     <aside 
       :class="[
-        'bg-white border-r border-slate-200 transition-all duration-300 flex flex-col sticky top-0 h-screen z-30',
+        'bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col sticky top-0 h-screen z-30',
         isSidebarCollapsed ? 'w-20' : 'w-72'
       ]"
     >
       <!-- Logo Area -->
-      <div class="h-16 flex items-center px-6 border-b border-slate-100 mb-4">
+      <div class="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 mb-4">
         <div class="flex items-center gap-3 overflow-hidden">
-          <div class="bg-indigo-600 p-2 rounded-xl text-white flex-shrink-0 shadow-lg shadow-indigo-100">
+          <div class="bg-indigo-600 p-2 rounded-xl text-white flex-shrink-0 shadow-lg shadow-indigo-100 dark:shadow-indigo-900/20">
             <Package class="w-6 h-6" />
           </div>
-          <span v-if="!isSidebarCollapsed" class="font-black text-xl tracking-tight text-slate-800 truncate">
+          <span v-if="!isSidebarCollapsed" class="font-black text-xl tracking-tight text-slate-800 dark:text-slate-100 truncate">
             {{ configStore.tenantName || 'Invent' }}<span class="text-indigo-600" v-if="!configStore.tenantName"> Story</span>
           </span>
         </div>
@@ -185,7 +187,7 @@ const languages = [
             <div 
               v-if="!isSidebarCollapsed"
               @click="toggleGroup(nav.id!)"
-              class="flex items-center justify-between px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] cursor-pointer hover:text-slate-600 transition-colors group"
+              class="flex items-center justify-between px-4 py-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] cursor-pointer hover:text-slate-600 dark:hover:text-slate-300 transition-colors group"
             >
               <div class="flex items-center gap-2">
                 <component :is="nav.icon" class="w-3.5 h-3.5" />
@@ -211,10 +213,10 @@ const languages = [
       </nav>
 
       <!-- Bottom Actions -->
-      <div class="p-3 border-t border-slate-100 space-y-1">
+      <div class="p-3 border-t border-slate-100 dark:border-slate-800 space-y-1">
         <button 
           @click="logout"
-          class="flex items-center w-full px-4 py-3 text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all rounded-2xl group relative"
+          class="flex items-center w-full px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 transition-all rounded-2xl group relative"
         >
           <LogOut class="w-5 h-5 flex-shrink-0" />
           <span v-if="!isSidebarCollapsed" class="ml-3 font-bold text-sm">{{ t('common.logout') }}</span>
@@ -223,7 +225,7 @@ const languages = [
         
         <button 
           @click="isSidebarCollapsed = !isSidebarCollapsed"
-          class="flex items-center w-full px-4 py-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all rounded-2xl hidden md:flex"
+          class="flex items-center w-full px-4 py-2 text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-all rounded-2xl hidden md:flex"
         >
           <ChevronLeft :class="['w-5 h-5 transition-transform duration-300', isSidebarCollapsed ? 'rotate-180' : '']" />
           <span v-if="!isSidebarCollapsed" class="ml-3 font-black text-[10px] uppercase tracking-widest">Collapse</span>
@@ -233,30 +235,39 @@ const languages = [
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0 h-screen">
-      <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex justify-between items-center sticky top-0 z-20">
-        <h2 class="text-lg font-black text-slate-800 tracking-tight uppercase tracking-widest text-xs">{{ currentRouteName }}</h2>
+      <header class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 flex justify-between items-center sticky top-0 z-20">
+        <h2 class="text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight uppercase tracking-widest text-xs">{{ currentRouteName }}</h2>
         
         <div class="flex items-center gap-6">
+          <!-- Theme Toggle -->
+          <button 
+            @click="configStore.toggleTheme"
+            class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+          >
+            <Sun v-if="configStore.theme === 'dark'" class="w-5 h-5" />
+            <Moon v-else class="w-5 h-5" />
+          </button>
+
           <!-- Language Switcher -->
-          <div class="flex items-center bg-slate-100 p-1 rounded-xl">
-            <button v-for="lang in languages" :key="lang.code" @click="configStore.setLanguage(lang.code)" class="px-3 py-1 rounded-lg text-[10px] font-black transition-all" :class="configStore.language === lang.code ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'">{{ lang.name }}</button>
+          <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+            <button v-for="lang in languages" :key="lang.code" @click="configStore.setLanguage(lang.code)" class="px-3 py-1 rounded-lg text-[10px] font-black transition-all" :class="configStore.language === lang.code ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'">{{ lang.name }}</button>
           </div>
 
-          <div class="h-8 w-px bg-slate-200"></div>
+          <div class="h-8 w-px bg-slate-200 dark:bg-slate-800"></div>
           
           <div class="flex items-center gap-3 group cursor-pointer" @click="router.push('/settings')">
             <div class="text-right hidden sm:block">
-              <p class="text-sm font-black text-slate-800 leading-tight">{{ authStore.user?.username }}</p>
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ authStore.user?.is_owner ? 'Owner' : authStore.user?.role?.name || 'Staff' }}</p>
+              <p class="text-sm font-black text-slate-800 dark:text-slate-100 leading-tight">{{ authStore.user?.username }}</p>
+              <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ authStore.user?.is_owner ? 'Owner' : authStore.user?.role?.name || 'Staff' }}</p>
             </div>
-            <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center border-2 border-indigo-50 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border-2 border-indigo-50 dark:border-indigo-900/50 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
               <User class="w-5 h-5 font-bold" />
             </div>
           </div>
         </div>
       </header>
 
-      <main class="flex-1 p-8 overflow-y-auto custom-scrollbar bg-slate-50/50">
+      <main class="flex-1 p-8 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-950/50">
         <slot />
       </main>
     </div>
@@ -274,7 +285,13 @@ const languages = [
   background: var(--color-slate-200);
   border-radius: 10px;
 }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-slate-800);
+}
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--color-indigo-200);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-indigo-900);
 }
 </style>

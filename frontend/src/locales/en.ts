@@ -160,7 +160,8 @@ export default {
     allClear: "All clear!",
     billDetails: "Bill Details",
     selectBillDesc: "Select an active bill to view details and process payment",
-    successPayment: "Order has been paid and inventory updated."
+    successPayment: "Order has been paid and inventory updated.",
+    orderPlaced: "Order placed for"
   },
   reports: {
     title: "Financial History",
@@ -205,7 +206,19 @@ export default {
     dataIsolation: "Data Isolation",
     roleControl: "Role Control",
     stockTracking: "Stock Tracking",
-    paymentFlow: "Payment Flow"
+    paymentFlow: "Payment Flow",
+    step1Desc: "Begin by adding your raw materials (e.g., Rice, Meat, Oil). Define their units (KG, GR, Litre) and set minimum stock alerts to avoid running out.",
+    step1Usage: "Go to Kitchen & Storage > Inventory.",
+    step2Desc: "Create \"Blueprints\" for your dishes. Link your raw ingredients to a menu item and specify exactly how much of each is needed for 1 portion.",
+    step2Usage: "Go to Kitchen & Storage > Recipe Management.",
+    step3Desc: "When the Chef cooks a batch, record it here. The system automatically deducts raw materials from Inventory and increases the \"Ready to Sell\" stock.",
+    step3Usage: "Go to Kitchen & Storage > Production Hall.",
+    step4Desc: "Waiters select a table and add cooked products to the cart. This marks the table as \"Occupied\" and prepares the bill.",
+    step4Usage: "Go to Sales & Floor > New Order.",
+    step5Desc: "When the customer is ready to leave, process the payment. This finalizes the order, deducts the cooked product stock, and frees the table.",
+    step5Usage: "Go to Sales & Floor > Payments.",
+    step6Desc: "Monitor daily revenue, order trends, and production history. Use these insights to optimize your stock and menu pricing.",
+    step6Usage: "Check Dashboard or Administration > Order History."
   },
   settings: {
     title: "Account & Tenant Settings",

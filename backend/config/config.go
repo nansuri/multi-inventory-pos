@@ -28,16 +28,22 @@ func LoadConfig() (config Config, err error) {
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	// If .env exists, read it. If not, it's okay because we use env vars.
+	// Set Defaults
+	viper.SetDefault("DB_HOST", "172.18.0.2")
+	viper.SetDefault("DB_PORT", "5432")
+	viper.SetDefault("DB_USER", "postgres")
+	viper.SetDefault("DB_PASSWORD", "Sv2K8OD313HnLEIb")
+	viper.SetDefault("DB_NAME", "palugada_dashboard")
+	viper.SetDefault("DB_SSLMODE", "disable")
+	viper.SetDefault("REDIS_HOST", "localhost")
+	viper.SetDefault("REDIS_PORT", "6379")
+	viper.SetDefault("APP_PORT", "85")
+	viper.SetDefault("GIN_MODE", "debug")
+
 	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("Note: .env file not found, using environment variables")
+		log.Printf("Note: .env file not found, using environment variables or defaults")
 	}
 
-	// This is key: tell viper how to unmarshal environment variables into the struct
-	// by explicitly binding each field to its corresponding env var.
-	// Alternatively, just use AutomaticEnv and Unmarshal with a decoder hook,
-	// but simpler is to just bind or use defaults.
-	
 	// Bind all keys to environment variables
 	viper.BindEnv("DB_HOST")
 	viper.BindEnv("DB_PORT")
