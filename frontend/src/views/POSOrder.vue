@@ -6,7 +6,9 @@ import api from '../api/axios';
 import { useConfigStore } from '../stores/config';
 import { ShoppingCart, CheckCircle, Users, Plus, Minus, UtensilsCrossed, Trash2, User, ChefHat } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const tables = ref<any[]>([]);
 const products = ref<any[]>([]);
 const selectedTable = ref<any>(null);
@@ -99,7 +101,7 @@ const totalPrice = () => cart.value.reduce((sum, item) => sum + (item.price * it
 const placeOrder = async () => {
   if (!selectedTable.value || cart.value.length === 0) return;
   if (!customerName.value) {
-    showAlert("Missing Info", "Please enter the customer / booker name to proceed.", "warning");
+    showAlert(t('common.error'), t('pos.customerBooker') + " required.", "warning");
     return;
   }
   
@@ -119,10 +121,10 @@ const placeOrder = async () => {
     await api.post('/api/orders', orderData);
     
     showAlert(
-      "Order Placed", 
-      `Order for ${customerName.value} at Table ${selectedTable.value.table_number} has been recorded.`, 
+      t('common.success'), 
+      `Order for ${customerName.value} at T-${selectedTable.value.table_number} placed.`, 
       "success",
-      "Go to Payments",
+      t('common.confirm'),
       () => {
         router.push('/pos/payment');
       }
@@ -133,7 +135,7 @@ const placeOrder = async () => {
     customerName.value = '';
     await fetchInitialData();
   } catch (error: any) {
-    showAlert("Order Failed", error.response?.data?.error || error.message, "danger");
+    showAlert(t('common.error'), error.response?.data?.error || error.message, "danger");
   } finally {
     actionLoading.value = false;
   }
@@ -154,7 +156,7 @@ onMounted(fetchInitialData);
               <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
                 <Users class="w-5 h-5" />
               </div>
-              {{ $t('pos.floorPlan') }}
+              {{ t('pos.floorPlan') }}
             </h3>
           </div>
           
@@ -173,7 +175,7 @@ onMounted(fetchInitialData);
               ]"
               :disabled="table.status === 'occupied'"
             >
-              <span class="text-sm font-black uppercase tracking-tighter" :class="selectedTable?.id === table.id ? 'text-indigo-100' : 'text-slate-400'">{{ $t('common.table') }}</span>
+              <span class="text-sm font-black uppercase tracking-tighter" :class="selectedTable?.id === table.id ? 'text-indigo-100' : 'text-slate-400'">{{ t('common.table') }}</span>
               <span class="text-2xl font-black">{{ table.table_number }}</span>
               <div class="mt-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider" 
                 :class="[
@@ -190,7 +192,7 @@ onMounted(fetchInitialData);
               class="p-6 rounded-[2rem] border-4 border-dashed border-slate-100 flex flex-col items-center justify-center text-slate-300 hover:text-indigo-500 hover:border-indigo-200 transition-all group"
             >
               <Plus class="w-8 h-8 group-hover:scale-110 transition-transform" />
-              <span class="text-[10px] font-black uppercase tracking-widest mt-2">{{ $t('pos.newTable') }}</span>
+              <span class="text-[10px] font-black uppercase tracking-widest mt-2">{{ t('pos.newTable') }}</span>
             </button>
           </div>
         </section>
@@ -202,7 +204,7 @@ onMounted(fetchInitialData);
               <div class="p-2 bg-orange-100 text-orange-600 rounded-lg">
                 <UtensilsCrossed class="w-5 h-5" />
               </div>
-              {{ $t('pos.availableMenu') }}
+              {{ t('pos.availableMenu') }}
             </h3>
           </div>
 
@@ -225,7 +227,7 @@ onMounted(fetchInitialData);
                     product.stock <= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'
                   ]"
                 >
-                  {{ product.stock > 0 ? product.stock + ' ' + $t('pos.ready') : $t('pos.out') }}
+                  {{ product.stock > 0 ? product.stock + ' ' + t('pos.ready') : t('pos.out') }}
                 </span>
               </div>
               
@@ -243,7 +245,7 @@ onMounted(fetchInitialData);
         
         <div v-else class="h-64 flex flex-col items-center justify-center text-slate-300 border-4 border-dashed border-slate-100 rounded-[3rem]">
           <Users class="w-16 h-16 mb-4 opacity-20" />
-          <p class="font-black text-lg opacity-40 uppercase tracking-widest">{{ $t('pos.selectTable') }}</p>
+          <p class="font-black text-lg opacity-40 uppercase tracking-widest">{{ t('pos.selectTable') }}</p>
         </div>
       </div>
 
@@ -253,7 +255,7 @@ onMounted(fetchInitialData);
           <div class="flex justify-between items-center mb-8">
             <h3 class="font-black text-xl flex items-center gap-3">
               <ShoppingCart class="w-6 h-6 text-indigo-400" />
-              {{ $t('pos.yourOrder') }}
+              {{ t('pos.yourOrder') }}
             </h3>
             <button @click="clearCart" class="text-slate-400 hover:text-white transition-colors p-2">
               <Trash2 class="w-5 h-5" />
@@ -262,7 +264,7 @@ onMounted(fetchInitialData);
 
           <div class="space-y-6">
             <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase text-indigo-300 tracking-widest ml-1">Customer / Booker Name</label>
+              <label class="text-[10px] font-black uppercase text-indigo-300 tracking-widest ml-1">{{ t('pos.customerBooker') }}</label>
               <div class="relative">
                 <input 
                   v-model="customerName" 
@@ -276,7 +278,7 @@ onMounted(fetchInitialData);
 
             <div v-if="selectedTable" class="bg-indigo-600/30 border border-indigo-500/30 rounded-2xl p-4 flex items-center justify-between">
               <div>
-                <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest">Table</p>
+                <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest">{{ t('common.table') }}</p>
                 <p class="text-2xl font-black">T-{{ selectedTable.table_number }}</p>
               </div>
               <Users class="w-8 h-8 text-indigo-400 opacity-50" />
@@ -305,13 +307,13 @@ onMounted(fetchInitialData);
 
           <div v-if="cart.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200 py-10">
             <ShoppingCart class="w-16 h-16 mb-4 opacity-10" />
-            <p class="font-black uppercase tracking-widest text-[10px] opacity-30 text-slate-400">{{ $t('pos.cartEmpty') }}</p>
+            <p class="font-black uppercase tracking-widest text-[10px] opacity-30 text-slate-400">{{ t('pos.cartEmpty') }}</p>
           </div>
         </div>
 
         <div class="p-8 border-t-2 border-dashed border-slate-100 bg-slate-50/50">
           <div class="flex justify-between items-center mb-6">
-            <span class="text-slate-800 font-black text-lg">Total</span>
+            <span class="text-slate-800 font-black text-lg">{{ t('common.total') }}</span>
             <span class="text-3xl font-black text-indigo-600">{{ configStore.formatCurrency(totalPrice()) }}</span>
           </div>
           
@@ -322,7 +324,7 @@ onMounted(fetchInitialData);
           >
             <span v-if="actionLoading" class="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
             <CheckCircle v-else class="w-6 h-6 text-green-400 group-hover:text-white transition-colors" />
-            Place Order
+            {{ t('common.add') }} {{ t('common.pos') }}
           </button>
         </div>
       </div>
@@ -331,19 +333,19 @@ onMounted(fetchInitialData);
     <!-- Add Table Modal -->
     <div v-if="isAddTableModalOpen" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 shadow-2xl scale-in-center">
-        <h3 class="text-2xl font-black text-slate-800 mb-2">{{ $t('pos.newTable') }}</h3>
+        <h3 class="text-2xl font-black text-slate-800 mb-2">{{ t('pos.newTable') }}</h3>
         <form @submit.prevent="addTable" class="space-y-6">
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Table Identifier</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('pos.tableIdentifier') }}</label>
             <input v-model="newTable.table_number" type="text" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
           </div>
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Seating Capacity</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('pos.seatingCapacity') }}</label>
             <input v-model.number="newTable.capacity" type="number" min="1" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
           </div>
           <div class="flex flex-col gap-2">
-            <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black">Create Table</button>
-            <button type="button" @click="isAddTableModalOpen = false" class="w-full py-4 text-slate-400 font-bold">Cancel</button>
+            <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black">{{ t('common.save') }}</button>
+            <button type="button" @click="isAddTableModalOpen = false" class="w-full py-4 text-slate-400 font-bold">{{ t('common.cancel') }}</button>
           </div>
         </form>
       </div>

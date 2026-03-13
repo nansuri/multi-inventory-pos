@@ -3,8 +3,10 @@ import { ref, onMounted, watch } from 'vue';
 import DashboardLayout from '../layouts/DashboardLayout.vue';
 import api from '../api/axios';
 import { useConfigStore } from '../stores/config';
+import { useI18n } from 'vue-i18n';
 import { LineChart, Calendar, DollarSign, Utensils, ChevronDown, ChevronRight, User } from 'lucide-vue-next';
 
+const { t } = useI18n();
 const logs = ref<any[]>([]);
 const totalRevenue = ref(0);
 const orderCount = ref(0);
@@ -51,9 +53,9 @@ onMounted(fetchHistory);
         <div>
           <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
             <LineChart class="w-10 h-10 text-indigo-600" />
-            Financial History
+            {{ t('reports.title') }}
           </h1>
-          <p class="text-slate-500 font-medium mt-1">Review your restaurant's performance and sales data.</p>
+          <p class="text-slate-500 font-medium mt-1">{{ t('reports.desc') }}</p>
         </div>
 
         <div class="flex items-center bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
@@ -81,7 +83,7 @@ onMounted(fetchHistory);
             </div>
           </div>
           <div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Total Revenue ({{ period }})</p>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">{{ t('reports.totalRevenue') }} ({{ period }})</p>
             <p class="text-5xl font-black text-slate-800">{{ configStore.formatCurrency(totalRevenue) }}</p>
           </div>
         </div>
@@ -96,7 +98,7 @@ onMounted(fetchHistory);
             </div>
           </div>
           <div>
-            <p class="text-xs font-bold text-indigo-300 uppercase tracking-[0.2em] mb-2">Orders Completed</p>
+            <p class="text-xs font-bold text-indigo-300 uppercase tracking-[0.2em] mb-2">{{ t('reports.ordersCompleted') }}</p>
             <p class="text-5xl font-black">{{ orderCount }}</p>
           </div>
         </div>
@@ -108,10 +110,10 @@ onMounted(fetchHistory);
           <thead>
             <tr class="bg-slate-50/50 border-b border-slate-100">
               <th class="w-10 px-4 py-6"></th>
-              <th class="px-4 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Transaction</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Customer</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Table</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Amount</th>
+              <th class="px-4 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ t('reports.transaction') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ t('reports.customer') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">{{ t('reports.table') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">{{ t('reports.amount') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-50">
@@ -121,7 +123,7 @@ onMounted(fetchHistory);
                 @click="toggleExpand(order.id)"
               >
                 <td class="px-4 py-6 text-center">
-                  <component :is="expandedOrders[order.id] ? ChevronDown : ChevronRight" class="w-4 h-4 text-slate-300 group-hover:text-indigo-500" />
+                  <component :is="expandedOrders[order.id] ? ChevronDown : ChevronRight" class="w-4 h-4 text-slate-300 group-hover:text-indigo-50" />
                 </td>
                 <td class="px-4 py-6">
                   <div class="flex items-center gap-3">
@@ -153,7 +155,7 @@ onMounted(fetchHistory);
               <tr v-if="expandedOrders[order.id]" class="bg-slate-50/50 animate-in slide-in-from-top-2 duration-200">
                 <td colspan="5" class="px-20 py-8">
                   <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 max-w-xl">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Order Items</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">{{ t('reports.orderItems') }}</p>
                     <div class="space-y-3">
                       <div v-for="item in order.items" :key="item.id" class="flex justify-between items-center text-sm">
                         <div class="flex items-center gap-3">
@@ -172,7 +174,7 @@ onMounted(fetchHistory);
               <td colspan="5" class="px-8 py-32 text-center">
                 <div class="flex flex-col items-center gap-4 opacity-20">
                   <LineChart class="w-20 h-20 text-slate-400" />
-                  <p class="text-xl font-black text-slate-500 uppercase tracking-[0.2em]">No Sales History</p>
+                  <p class="text-xl font-black text-slate-500 uppercase tracking-[0.2em]">{{ t('common.noData') }}</p>
                 </div>
               </td>
             </tr>

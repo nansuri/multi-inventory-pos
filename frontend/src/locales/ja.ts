@@ -7,6 +7,12 @@ export default {
     pos: "POS (注文)",
     productionLog: "生産ログ",
     settings: "設定",
+    guide: "システムガイド",
+    reports: "レポート",
+    employees: "従業員",
+    kitchenStorage: "厨房・保管",
+    salesFloor: "販売・フロア",
+    administration: "管理",
     logout: "ログアウト",
     cancel: "キャンセル",
     save: "保存",
@@ -28,10 +34,23 @@ export default {
     active: "有効",
     inactive: "無効",
     deactivate: "無効にする",
-    activate: "有効にする"
+    activate: "有効にする",
+    clear: "クリア",
+    login: "ログイン",
+    register: "登録",
+    password: "パスワード",
+    temporaryPassword: "仮パスワード",
+    username: "ユーザー名",
+    temporaryPasswordDesc: "これは従業員用のワンタイムパスワードです。",
+    registerNewTenant: "新規テナント登録",
+    alreadyHaveAccount: "アカウントをお持ちですか？",
+    welcomeBack: "おかえりなさい",
+    tagline: "すべての物語は小さな物語から始まります",
+    restaurantName: "店舗名"
   },
   dashboard: {
     overview: "システム概要",
+    overviewDesc: "本日のレストランの状況はこちらです。",
     liveUpdates: "ライブ更新",
     todayRevenue: "本日の売上",
     todayOrders: "本日の注文数",
@@ -59,7 +78,8 @@ export default {
     initialStock: "初期在庫",
     minAlert: "最小アラート",
     adjustmentQty: "調整数量",
-    stockNote: "増加は (+)、減少は (-) を使用してください。"
+    stockNote: "増加は (+)、減少は (-) を使用してください。",
+    scan: "スキャン"
   },
   recipes: {
     blueprints: "レシピ設計図",
@@ -80,7 +100,18 @@ export default {
     cookNow: "今すぐ調理",
     cookingPrep: "調理準備",
     portionsToCook: "調理数量 (人前)",
-    recordAdd: "記録して在庫を追加"
+    recordAdd: "記録して在庫を追加",
+    lowCookedStock: "調理済み在庫不足"
+  },
+  productionLog: {
+    title: "生産ログ",
+    desc: "全バッチの調理と材料消費の監査証跡。",
+    timestamp: "タイムスタンプ",
+    product: "商品",
+    output: "出力",
+    consumption: "消費",
+    itemsUsed: "使用されたアイテム",
+    inventoryDeducted: "在庫削減済み"
   },
   pos: {
     floorPlan: "フロアマップ",
@@ -94,7 +125,52 @@ export default {
     cartEmpty: "カートは空です",
     selectTable: "テーブルを選択して開始してください",
     ready: "準備完了",
-    out: "品切れ"
+    out: "品切れ",
+    tablesAvailable: "利用可能なテーブル",
+    orderingFor: "注文中：",
+    selectedTable: "選択されたテーブル",
+    tableIdentifier: "テーブル識別子",
+    seatingCapacity: "座席数"
+  },
+  reports: {
+    title: "財務履歴",
+    desc: "レストランの業績と売上データを確認します。",
+    totalRevenue: "総売上",
+    ordersCompleted: "完了した注文",
+    transaction: "取引",
+    customer: "顧客",
+    table: "テーブル",
+    amount: "金額",
+    orderItems: "注文アイテム"
+  },
+  employees: {
+    title: "スタッフ管理",
+    desc: "従業員アカウントとセキュリティロールを管理します。",
+    addEmployee: "従業員を追加",
+    manageRoles: "ロールを管理",
+    username: "ユーザー名",
+    assignedRole: "割り当てられたロール",
+    createStaff: "スタッフアカウントを作成",
+    newEmployee: "新規従業員",
+    tempPassword: "仮パスワード",
+    assignRole: "ロールを割り当て",
+    removeEmployee: "従業員を削除"
+  },
+  roles: {
+    title: "セキュリティロール",
+    desc: "スタッフメンバーのアクセスレベルを定義します。",
+    createRole: "新規ロール作成",
+    managePermissions: "権限を管理",
+    roleName: "ロール名",
+    pagePermissions: "ページ権限"
+  },
+  guide: {
+    title: "Invent Storyを理解する",
+    desc: "すべての物語は小さな物語から始まります。厨房からレジまでの管理方法は以下の通りです。",
+    coreFlow: "コア業務フロー",
+    securityTitle: "エンタープライズ級のセキュリティ",
+    securityDesc: "Invent Storyは厳格なマルチテナントアーキテクチャを使用しています。材料から売上レポートまで、すべてのデータは特定のレストラン向けにデジタル的に隔離されています。",
+    manageAccess: "スタッフアクセスを管理"
   },
   settings: {
     title: "アカウント・テナント設定",

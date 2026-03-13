@@ -7,6 +7,12 @@ export default {
     pos: "POS (Orders)",
     productionLog: "Production Log",
     settings: "Settings",
+    guide: "System Guide",
+    reports: "Reports",
+    employees: "Employees",
+    kitchenStorage: "Kitchen & Storage",
+    salesFloor: "Sales & Floor",
+    administration: "Administration",
     logout: "Logout",
     cancel: "Cancel",
     save: "Save",
@@ -28,10 +34,31 @@ export default {
     active: "Active",
     inactive: "Inactive",
     deactivate: "Deactivate",
-    activate: "Activate"
+    activate: "Activate",
+    clear: "Clear",
+    login: "Login",
+    register: "Register",
+    password: "Password",
+    temporaryPassword: "Temporary Password",
+    username: "Username",
+    temporaryPasswordDesc: "This is a one-time password for the employee.",
+    registerNewTenant: "Register New Tenant",
+    alreadyHaveAccount: "Already have an account?",
+    welcomeBack: "Welcome Back",
+    tagline: "Every Story start with small story",
+    restaurantName: "Restaurant Name",
+    pax: "Pax",
+    customer: "Customer",
+    table: "Table",
+    total: "Total",
+    qty: "Qty",
+    current: "Current",
+    success: "Success",
+    error: "Error"
   },
   dashboard: {
     overview: "System Overview",
+    overviewDesc: "Here's what's happening with your restaurant today.",
     liveUpdates: "Live Updates",
     todayRevenue: "Today's Revenue",
     todayOrders: "Orders Today",
@@ -43,7 +70,8 @@ export default {
     addInventory: "Add Inventory",
     productionReady: "Production Ready?",
     productionDesc: "Check your recipes and start cooking to fill up your available stock.",
-    goToProduction: "Go to Production Hall"
+    goToProduction: "Go to Production Hall",
+    actionRequired: "Action Required"
   },
   inventory: {
     addIngredient: "Add Ingredient",
@@ -59,7 +87,12 @@ export default {
     initialStock: "Initial Stock",
     minAlert: "Min. Alert",
     adjustmentQty: "Adjustment Quantity",
-    stockNote: "Use (+) for restock, (-) for deduction."
+    stockNote: "Use (+) for restock, (-) for deduction.",
+    scan: "Scan",
+    successAdd: "New ingredient has been added.",
+    successUpdate: "Ingredient details updated.",
+    successStock: "Ingredient inventory has been adjusted.",
+    successDelete: "Ingredient has been removed from inventory."
   },
   recipes: {
     blueprints: "Recipe Blueprints",
@@ -70,7 +103,11 @@ export default {
     newBlueprint: "New Blueprint",
     dishName: "Dish Name",
     sellingPrice: "Selling Price",
-    addRequirement: "Add Ingredient Requirement"
+    addRequirement: "Add Ingredient Requirement",
+    targetPrice: "Target Price",
+    ingredients: "Ingredients",
+    configureFormula: "Configure Formula",
+    noFormula: "No formula defined yet."
   },
   production: {
     hall: "Production Hall",
@@ -80,7 +117,20 @@ export default {
     cookNow: "Cook Now",
     cookingPrep: "Cooking Preparation",
     portionsToCook: "Portions to Cook (Pax)",
-    recordAdd: "Record & Add Stock"
+    recordAdd: "Record & Add Stock",
+    lowCookedStock: "Low Cooked Stock",
+    recordDesc: "Recording this batch will automatically deduct all required raw ingredients from your inventory.",
+    successCook: "batch has been added to stock."
+  },
+  productionLog: {
+    title: "Production Log",
+    desc: "Audit trail of all batch preparations and ingredient consumption.",
+    timestamp: "Timestamp",
+    product: "Product",
+    output: "Output",
+    consumption: "Consumption",
+    itemsUsed: "Items Used",
+    inventoryDeducted: "Inventory Deducted"
   },
   pos: {
     floorPlan: "Floor Plan",
@@ -94,13 +144,75 @@ export default {
     cartEmpty: "Cart is empty",
     selectTable: "Select a table to start",
     ready: "ready",
-    out: "Out"
+    out: "Out",
+    tablesAvailable: "Tables Available",
+    orderingFor: "Ordering for",
+    selectedTable: "Selected Table",
+    tableIdentifier: "Table Identifier",
+    seatingCapacity: "Seating Capacity",
+    customerBooker: "Customer / Booker Name",
+    activeBills: "Active Bills",
+    pendingPayments: "Pending Payments",
+    noBills: "No pending bills found.",
+    allClear: "All clear!",
+    billDetails: "Bill Details",
+    selectBillDesc: "Select an active bill to view details and process payment",
+    successPayment: "Order has been paid and inventory updated."
+  },
+  reports: {
+    title: "Financial History",
+    desc: "Review your restaurant's performance and sales data.",
+    totalRevenue: "Total Revenue",
+    ordersCompleted: "Orders Completed",
+    transaction: "Transaction",
+    customer: "Customer",
+    table: "Table",
+    amount: "Amount",
+    orderItems: "Order Items"
+  },
+  employees: {
+    title: "Staff Management",
+    desc: "Manage employee accounts and their security roles.",
+    addEmployee: "Add Employee",
+    manageRoles: "Manage Roles",
+    username: "Username",
+    assignedRole: "Assigned Role",
+    createStaff: "Create Staff Account",
+    newEmployee: "New Employee",
+    tempPassword: "Temporary Password",
+    assignRole: "Assign Role",
+    removeEmployee: "Remove Employee"
+  },
+  roles: {
+    title: "Security Roles",
+    desc: "Define access levels for your staff members.",
+    createRole: "Create New Role",
+    managePermissions: "Manage Permissions",
+    roleName: "Role Name",
+    pagePermissions: "Page Permissions",
+    noPermissions: "No permissions assigned."
+  },
+  guide: {
+    title: "Understanding Invent Story",
+    desc: "Every story start with small story. Here is how to manage yours from kitchen to cash register.",
+    coreFlow: "The Core Operational Flow",
+    securityTitle: "Enterprise-Grade Security",
+    securityDesc: "Invent Story uses a strict multi-tenant architecture. Every piece of data—from ingredients to sales reports—is digitally isolated for your specific restaurant.",
+    manageAccess: "Manage Staff Access",
+    dataIsolation: "Data Isolation",
+    roleControl: "Role Control",
+    stockTracking: "Stock Tracking",
+    paymentFlow: "Payment Flow"
   },
   settings: {
     title: "Account & Tenant Settings",
     language: "Application Language",
     currency: "System Currency",
     tenantName: "Restaurant Name",
-    saveSettings: "Save All Changes"
+    saveSettings: "Save All Changes",
+    localization: "Localization",
+    localizationDesc: "Adjust your language and currency to match your local market requirements.",
+    tenantProfile: "Tenant Profile",
+    tenantProfileDesc: "This name will appear on your dashboard and internal reports."
   }
 };

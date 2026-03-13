@@ -4,8 +4,10 @@ import DashboardLayout from '../layouts/DashboardLayout.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import FormModal from '../components/FormModal.vue';
 import api from '../api/axios';
+import { useI18n } from 'vue-i18n';
 import { Users, UserPlus, Trash2, Mail, Shield, Key } from 'lucide-vue-next';
 
+const { t } = useI18n();
 const employees = ref<any[]>([]);
 const roles = ref<any[]>([]);
 const loading = ref(true);
@@ -47,7 +49,7 @@ const createEmployee = async () => {
     employeeForm.value = { username: '', password: '', role_id: null };
     await fetchEmployees();
   } catch (error: any) {
-    alert(error.response?.data?.error || 'Failed to create employee');
+    console.error('Failed to create employee', error);
   } finally {
     actionLoading.value = false;
   }
@@ -74,21 +76,21 @@ onMounted(fetchEmployees);
         <div>
           <h1 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-3">
             <Users class="w-8 h-8 text-indigo-600" />
-            Staff Management
+            {{ t('employees.title') }}
           </h1>
-          <p class="text-slate-500 font-medium mt-1">Manage employee accounts and their security roles.</p>
+          <p class="text-slate-500 font-medium mt-1">{{ t('employees.desc') }}</p>
         </div>
         <div class="flex gap-3">
           <router-link to="/roles" class="bg-white border border-slate-200 text-slate-700 px-6 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
             <Shield class="w-5 h-5 text-slate-400" />
-            Manage Roles
+            {{ t('employees.manageRoles') }}
           </router-link>
           <button 
             @click="isAddModalOpen = true"
             class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2"
           >
             <UserPlus class="w-5 h-5" />
-            Add Employee
+            {{ t('employees.addEmployee') }}
           </button>
         </div>
       </div>
@@ -97,9 +99,9 @@ onMounted(fetchEmployees);
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-slate-50/50 border-b border-slate-100">
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Username</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Assigned Role</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ t('employees.username') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ t('employees.assignedRole') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{{ t('common.actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-50">
@@ -124,7 +126,7 @@ onMounted(fetchEmployees);
               </td>
             </tr>
             <tr v-if="employees.length === 0 && !loading">
-              <td colspan="3" class="px-8 py-20 text-center text-slate-400 italic">No employees found.</td>
+              <td colspan="3" class="px-8 py-20 text-center text-slate-400 italic">{{ t('common.noData') }}</td>
             </tr>
           </tbody>
         </table>
@@ -134,8 +136,8 @@ onMounted(fetchEmployees);
     <!-- Modals -->
     <FormModal 
       :show="isAddModalOpen" 
-      title="Create Staff Account" 
-      subtitle="New Employee"
+      :title="t('employees.createStaff')" 
+      :subtitle="t('employees.newEmployee')"
       :icon="UserPlus" 
       :loading="actionLoading"
       @submit="createEmployee" 
@@ -143,23 +145,23 @@ onMounted(fetchEmployees);
     >
       <div class="space-y-6">
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Username</label>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('employees.username') }}</label>
           <div class="relative">
             <input v-model="employeeForm.username" type="text" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none pl-12" />
             <Mail class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
           </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Temporary Password</label>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('employees.tempPassword') }}</label>
           <div class="relative">
             <input v-model="employeeForm.password" type="password" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none pl-12" />
             <Key class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
           </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assign Role</label>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('employees.assignRole') }}</label>
           <select v-model="employeeForm.role_id" required class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none appearance-none">
-            <option :value="null" disabled>Select a role...</option>
+            <option :value="null" disabled>{{ t('employees.assignRole') }}...</option>
             <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
           </select>
         </div>
@@ -169,8 +171,8 @@ onMounted(fetchEmployees);
     <ConfirmModal 
       :show="isDeleteModalOpen"
       type="danger"
-      title="Remove Employee?"
-      :message="`Are you sure you want to delete the account for '${selectedEmployee?.username}'? This action cannot be undone.`"
+      :title="t('employees.removeEmployee')"
+      :message="`${t('common.confirm')} delete ${selectedEmployee?.username}?`"
       :loading="actionLoading"
       @confirm="deleteEmployee"
       @cancel="isDeleteModalOpen = false"

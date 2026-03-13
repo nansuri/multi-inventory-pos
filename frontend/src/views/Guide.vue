@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DashboardLayout from '../layouts/DashboardLayout.vue';
+import { useI18n } from 'vue-i18n';
 import { 
   Package, 
   BookOpen, 
@@ -11,57 +12,60 @@ import {
   ShieldCheck,
   CheckCircle2
 } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-const steps = [
+const { t } = useI18n();
+
+const steps = computed(() => [
   {
-    title: '1. Inventory Setup',
+    title: t('guide.step1Title', '1. Inventory Setup'),
     icon: Package,
     color: 'text-blue-600',
     bg: 'bg-blue-50',
-    desc: 'Begin by adding your raw materials (e.g., Rice, Meat, Oil). Define their units (KG, GR, Litre) and set minimum stock alerts to avoid running out.',
-    usage: 'Go to Kitchen & Storage > Inventory.'
+    desc: t('guide.step1Desc', 'Begin by adding your raw materials (e.g., Rice, Meat, Oil). Define their units (KG, GR, Litre) and set minimum stock alerts to avoid running out.'),
+    usage: t('guide.step1Usage', 'Go to Kitchen & Storage > Inventory.')
   },
   {
-    title: '2. Define Recipes',
+    title: t('guide.step2Title', '2. Define Recipes'),
     icon: BookOpen,
     color: 'text-indigo-600',
     bg: 'bg-indigo-50',
-    desc: 'Create "Blueprints" for your dishes. Link your raw ingredients to a menu item and specify exactly how much of each is needed for 1 portion.',
-    usage: 'Go to Kitchen & Storage > Recipe Management.'
+    desc: t('guide.step2Desc', 'Create "Blueprints" for your dishes. Link your raw ingredients to a menu item and specify exactly how much of each is needed for 1 portion.'),
+    usage: t('guide.step2Usage', 'Go to Kitchen & Storage > Recipe Management.')
   },
   {
-    title: '3. Production (Cooking)',
+    title: t('guide.step3Title', '3. Production (Cooking)'),
     icon: ChefHat,
     color: 'text-orange-600',
     bg: 'bg-orange-50',
-    desc: 'When the Chef cooks a batch, record it here. The system automatically deducts raw materials from Inventory and increases the "Ready to Sell" stock.',
-    usage: 'Go to Kitchen & Storage > Production Hall.'
+    desc: t('guide.step3Desc', 'When the Chef cooks a batch, record it here. The system automatically deducts raw materials from Inventory and increases the "Ready to Sell" stock.'),
+    usage: t('guide.step3Usage', 'Go to Kitchen & Storage > Production Hall.')
   },
   {
-    title: '4. Take Orders',
+    title: t('guide.step4Title', '4. Take Orders'),
     icon: Utensils,
     color: 'text-pink-600',
     bg: 'bg-pink-50',
-    desc: 'Waiters select a table and add cooked products to the cart. This marks the table as "Occupied" and prepares the bill.',
-    usage: 'Go to Sales & Floor > New Order.'
+    desc: t('guide.step4Desc', 'Waiters select a table and add cooked products to the cart. This marks the table as "Occupied" and prepares the bill.'),
+    usage: t('guide.step4Usage', 'Go to Sales & Floor > New Order.')
   },
   {
-    title: '5. Process Payments',
+    title: t('guide.step5Title', '5. Process Payments'),
     icon: CreditCard,
     color: 'text-green-600',
     bg: 'bg-green-50',
-    desc: 'When the customer is ready to leave, process the payment. This finalizes the order, deducts the cooked product stock, and frees the table.',
-    usage: 'Go to Sales & Floor > Payments.'
+    desc: t('guide.step5Desc', 'When the customer is ready to leave, process the payment. This finalizes the order, deducts the cooked product stock, and frees the table.'),
+    usage: t('guide.step5Usage', 'Go to Sales & Floor > Payments.')
   },
   {
-    title: '6. Review & Analytics',
+    title: t('guide.step6Title', '6. Review & Analytics'),
     icon: LineChart,
     color: 'text-purple-600',
     bg: 'bg-purple-50',
-    desc: 'Monitor daily revenue, order trends, and production history. Use these insights to optimize your stock and menu pricing.',
-    usage: 'Check Dashboard or Administration > Order History.'
+    desc: t('guide.step6Desc', 'Monitor daily revenue, order trends, and production history. Use these insights to optimize your stock and menu pricing.'),
+    usage: t('guide.step6Usage', 'Check Dashboard or Administration > Order History.')
   }
-];
+]);
 </script>
 
 <template>
@@ -69,8 +73,8 @@ const steps = [
     <div class="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-700">
       <!-- Header -->
       <div class="text-center space-y-4">
-        <h1 class="text-4xl font-black text-slate-800 tracking-tight">Understanding <span class="text-indigo-600">Invent Story</span></h1>
-        <p class="text-lg text-slate-500 max-w-2xl mx-auto font-medium">Every story start with small story. Here is how to manage yours from kitchen to cash register.</p>
+        <h1 class="text-4xl font-black text-slate-800 tracking-tight">{{ t('guide.title') }}</h1>
+        <p class="text-lg text-slate-500 max-w-2xl mx-auto font-medium">{{ t('guide.desc') }}</p>
       </div>
 
       <!-- Business Flow Diagram -->
@@ -81,7 +85,7 @@ const steps = [
         
         <h3 class="text-xl font-black text-slate-800 mb-10 flex items-center gap-2">
           <div class="w-2 h-8 bg-indigo-600 rounded-full"></div>
-          The Core Operational Flow
+          {{ t('guide.coreFlow') }}
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
@@ -89,7 +93,7 @@ const steps = [
             <div class="w-16 h-16 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl">
               <Package class="w-8 h-8" />
             </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400">Inventory</span>
+            <span class="font-black text-xs uppercase tracking-widest text-slate-400">{{ t('common.inventory') }}</span>
           </div>
           <div class="hidden md:flex justify-center text-slate-200">
             <ArrowRight class="w-8 h-8" />
@@ -98,7 +102,7 @@ const steps = [
             <div class="w-16 h-16 rounded-2xl bg-orange-600 text-white flex items-center justify-center shadow-xl">
               <ChefHat class="w-8 h-8" />
             </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400">Production</span>
+            <span class="font-black text-xs uppercase tracking-widest text-slate-400">{{ t('common.production') }}</span>
           </div>
           <div class="hidden md:flex justify-center text-slate-200">
             <ArrowRight class="w-8 h-8" />
@@ -116,7 +120,7 @@ const steps = [
             <div class="w-16 h-16 rounded-2xl bg-green-600 text-white flex items-center justify-center shadow-xl">
               <LineChart class="w-8 h-8" />
             </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400">Reports</span>
+            <span class="font-black text-xs uppercase tracking-widest text-slate-400">{{ t('common.reports') }}</span>
           </div>
         </div>
       </div>
@@ -149,13 +153,12 @@ const steps = [
       <div class="bg-slate-900 rounded-[3rem] p-12 text-white relative overflow-hidden">
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="space-y-6">
-            <h3 class="text-3xl font-black tracking-tight">Enterprise-Grade Security</h3>
+            <h3 class="text-3xl font-black tracking-tight">{{ t('guide.securityTitle') }}</h3>
             <p class="text-slate-400 font-medium leading-relaxed">
-              Invent Story uses a strict multi-tenant architecture. Every piece of data—from ingredients to sales reports—is digitally isolated for your specific restaurant. 
-              Owners can use the <strong>Employee Management</strong> system to grant specific access to Chefs, Waiters, and Managers.
+              {{ t('guide.securityDesc') }}
             </p>
             <router-link to="/employees" class="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-900/20">
-              Manage Staff Access
+              {{ t('guide.manageAccess') }}
               <ArrowRight class="w-5 h-5" />
             </router-link>
           </div>

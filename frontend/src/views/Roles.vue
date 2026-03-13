@@ -4,8 +4,10 @@ import DashboardLayout from '../layouts/DashboardLayout.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import FormModal from '../components/FormModal.vue';
 import api from '../api/axios';
-import { Users, ShieldCheck, Plus, Trash2, Edit2, Lock } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+import { Users, ShieldCheck, Plus, Trash2, Edit2, Lock, Check } from 'lucide-vue-next';
 
+const { t } = useI18n();
 const roles = ref<any[]>([]);
 const loading = ref(true);
 const actionLoading = ref(false);
@@ -107,16 +109,16 @@ onMounted(fetchRoles);
         <div>
           <h1 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-3">
             <ShieldCheck class="w-8 h-8 text-indigo-600" />
-            Security Roles
+            {{ t('roles.title') }}
           </h1>
-          <p class="text-slate-500 font-medium mt-1">Define access levels for your staff members.</p>
+          <p class="text-slate-500 font-medium mt-1">{{ t('roles.desc') }}</p>
         </div>
         <button 
           @click="isAddModalOpen = true; roleForm = { id: 0, name: '', permissions: [] }"
           class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2"
         >
           <Plus class="w-5 h-5" />
-          Create New Role
+          {{ t('roles.createRole') }}
         </button>
       </div>
 
@@ -146,7 +148,7 @@ onMounted(fetchRoles);
           </div>
 
           <button @click="openEditModal(role)" class="mt-auto w-full py-4 bg-slate-50 text-slate-700 rounded-2xl font-black hover:bg-indigo-600 hover:text-white transition-all">
-            Manage Permissions
+            {{ t('roles.managePermissions') }}
           </button>
         </div>
       </div>
@@ -155,7 +157,7 @@ onMounted(fetchRoles);
     <!-- Modals -->
     <FormModal 
       :show="isAddModalOpen || isEditModalOpen" 
-      :title="isEditModalOpen ? 'Edit Role' : 'New Security Role'" 
+      :title="isEditModalOpen ? t('common.edit') + ' Role' : t('roles.createRole')" 
       :icon="ShieldCheck" 
       :loading="actionLoading"
       maxWidth="max-w-2xl"
@@ -164,12 +166,12 @@ onMounted(fetchRoles);
     >
       <div class="space-y-8">
         <div class="space-y-2">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Role Name</label>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('roles.roleName') }}</label>
           <input v-model="roleForm.name" type="text" required placeholder="e.g. Head Chef, Junior Waiter" class="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl font-bold focus:bg-white focus:border-indigo-600 transition-all outline-none" />
         </div>
 
         <div class="space-y-4">
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Page Permissions</label>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ t('roles.pagePermissions') }}</label>
           <div class="grid grid-cols-2 gap-3">
             <button 
               v-for="mod in permissionModules" 

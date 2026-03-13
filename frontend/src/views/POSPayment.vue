@@ -4,8 +4,10 @@ import DashboardLayout from '../layouts/DashboardLayout.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import api from '../api/axios';
 import { useConfigStore } from '../stores/config';
+import { useI18n } from 'vue-i18n';
 import { CreditCard, CheckCircle, Users, ShoppingCart, Clock, User, ArrowRight } from 'lucide-vue-next';
 
+const { t } = useI18n();
 const orders = ref<any[]>([]);
 const selectedOrder = ref<any>(null);
 const loading = ref(true);
@@ -41,11 +43,11 @@ const processPayment = async () => {
   actionLoading.value = true;
   try {
     await api.post(`/api/orders/${selectedOrder.value.id}/complete`);
-    showAlert("Payment Successful", "Order has been paid and inventory updated.", "success");
+    showAlert(t('common.success'), t('pos.successPayment'), "success");
     selectedOrder.value = null;
     await fetchOrders();
   } catch (error: any) {
-    showAlert("Payment Failed", error.response?.data?.error || error.message, "danger");
+    showAlert(t('common.error'), error.response?.data?.error || error.message, "danger");
   } finally {
     actionLoading.value = false;
   }
@@ -69,9 +71,9 @@ onMounted(fetchOrders);
             <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
               <CreditCard class="w-5 h-5" />
             </div>
-            Active Bills
+            {{ t('pos.activeBills') }}
           </h3>
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ orders.length }} Pending Payments</span>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ orders.length }} {{ t('pos.pendingPayments') }}</span>
         </div>
 
         <div v-if="orders.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -94,7 +96,7 @@ onMounted(fetchOrders);
                 <Users class="w-6 h-6" :class="selectedOrder?.id === order.id ? 'text-white' : 'text-indigo-600'" />
               </div>
               <div class="text-right">
-                <p class="text-[10px] font-black uppercase opacity-60">Table</p>
+                <p class="text-[10px] font-black uppercase opacity-60">{{ t('common.table') }}</p>
                 <p class="text-xl font-black">{{ order.table?.table_number || 'N/A' }}</p>
               </div>
             </div>
@@ -124,7 +126,7 @@ onMounted(fetchOrders);
 
         <div v-else class="h-64 flex flex-col items-center justify-center text-slate-300 border-4 border-dashed border-slate-100 rounded-[3rem]">
           <CreditCard class="w-16 h-16 mb-4 opacity-20" />
-          <p class="font-black text-lg opacity-40 uppercase tracking-widest text-center px-10">No pending bills found.<br><span class="text-xs font-medium">All clear!</span></p>
+          <p class="font-black text-lg opacity-40 uppercase tracking-widest text-center px-10">{{ t('pos.noBills') }}<br><span class="text-xs font-medium">{{ t('pos.allClear') }}</span></p>
         </div>
       </div>
 
@@ -134,15 +136,15 @@ onMounted(fetchOrders);
           <div class="p-8 bg-slate-900 text-white">
             <h3 class="font-black text-xl flex items-center gap-3 mb-8">
               <CreditCard class="w-6 h-6 text-indigo-400" />
-              Bill Details
+              {{ t('pos.billDetails') }}
             </h3>
             <div class="grid grid-cols-2 gap-4">
               <div class="bg-indigo-600/30 border border-indigo-500/30 rounded-2xl p-4">
-                <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest mb-1">Customer</p>
+                <p class="text-[10px] font-black uppercase text-indigo-300 tracking-widest mb-1">{{ t('common.customer') }}</p>
                 <p class="text-lg font-black truncate">{{ selectedOrder.customer_name }}</p>
               </div>
               <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
-                <p class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Table</p>
+                <p class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">{{ t('common.table') }}</p>
                 <p class="text-lg font-black">{{ selectedOrder.table?.table_number }}</p>
               </div>
             </div>
@@ -160,14 +162,14 @@ onMounted(fetchOrders);
 
           <div class="p-8 border-t-2 border-dashed border-slate-100 bg-slate-50/50">
             <div class="flex justify-between items-center mb-8">
-              <span class="text-slate-800 font-black text-lg">Total Bill</span>
+              <span class="text-slate-800 font-black text-lg">{{ t('pos.totalAmount') }}</span>
               <span class="text-3xl font-black text-indigo-600">{{ configStore.formatCurrency(selectedOrder.total_price) }}</span>
             </div>
             <button @click="processPayment" :disabled="actionLoading" class="w-full bg-slate-900 text-white py-5 rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-xl shadow-slate-200 group">
               <span v-if="actionLoading" class="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
               <template v-else>
                 <CheckCircle class="w-6 h-6 text-green-400 group-hover:text-white transition-colors" />
-                Process Payment
+                {{ t('pos.processPayment') }}
               </template>
             </button>
           </div>
@@ -177,12 +179,11 @@ onMounted(fetchOrders);
           <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6">
             <ShoppingCart class="w-10 h-10 text-slate-200" />
           </div>
-          <p class="font-black uppercase tracking-widest text-[10px] text-slate-400">Select an active bill to view details and process payment</p>
+          <p class="font-black uppercase tracking-widest text-[10px] text-slate-400">{{ t('pos.selectBillDesc') }}</p>
         </div>
       </div>
     </div>
 
-    <!-- Universal Alert Modal -->
     <ConfirmModal 
       :show="alertConfig.show"
       :title="alertConfig.title"

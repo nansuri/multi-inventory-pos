@@ -7,6 +7,12 @@ export default {
     pos: "POS (Pesanan)",
     productionLog: "Log Produksi",
     settings: "Pengaturan",
+    guide: "Panduan Sistem",
+    reports: "Laporan",
+    employees: "Karyawan",
+    kitchenStorage: "Dapur & Gudang",
+    salesFloor: "Penjualan & Lantai",
+    administration: "Administrasi",
     logout: "Keluar",
     cancel: "Batal",
     save: "Simpan",
@@ -28,10 +34,31 @@ export default {
     active: "Aktif",
     inactive: "Nonaktif",
     deactivate: "Nonaktifkan",
-    activate: "Aktifkan"
+    activate: "Aktifkan",
+    clear: "Bersihkan",
+    login: "Masuk",
+    register: "Daftar",
+    password: "Kata Sandi",
+    temporaryPassword: "Kata Sandi Sementara",
+    username: "Nama Pengguna",
+    temporaryPasswordDesc: "Ini adalah kata sandi satu kali untuk karyawan.",
+    registerNewTenant: "Daftar Tenant Baru",
+    alreadyHaveAccount: "Sudah punya akun?",
+    welcomeBack: "Selamat Datang",
+    tagline: "Setiap cerita dimulai dengan cerita kecil",
+    restaurantName: "Nama Restoran",
+    pax: "Pax",
+    customer: "Pelanggan",
+    table: "Meja",
+    total: "Total",
+    qty: "Jumlah",
+    current: "Saat Ini",
+    success: "Berhasil",
+    error: "Kesalahan"
   },
   dashboard: {
     overview: "Ikhtisar Sistem",
+    overviewDesc: "Berikut adalah apa yang terjadi di restoran Anda hari ini.",
     liveUpdates: "Pembaruan Langsung",
     todayRevenue: "Pendapatan Hari Ini",
     todayOrders: "Pesanan Hari Ini",
@@ -43,7 +70,8 @@ export default {
     addInventory: "Tambah Inventaris",
     productionReady: "Siap Produksi?",
     productionDesc: "Cek resep Anda dan mulai memasak untuk mengisi stok tersedia.",
-    goToProduction: "Ke Aula Produksi"
+    goToProduction: "Ke Aula Produksi",
+    actionRequired: "Butuh Tindakan"
   },
   inventory: {
     addIngredient: "Tambah Bahan",
@@ -59,7 +87,12 @@ export default {
     initialStock: "Stok Awal",
     minAlert: "Peringatan Min.",
     adjustmentQty: "Jumlah Penyesuaian",
-    stockNote: "Gunakan (+) untuk tambah, (-) untuk kurang."
+    stockNote: "Gunakan (+) untuk tambah, (-) untuk kurang.",
+    scan: "Pindai",
+    successAdd: "Bahan baru telah ditambahkan.",
+    successUpdate: "Detail bahan telah diperbarui.",
+    successStock: "Inventaris bahan telah disesuaikan.",
+    successDelete: "Bahan telah dihapus dari inventaris."
   },
   recipes: {
     blueprints: "Cetak Biru Resep",
@@ -70,7 +103,11 @@ export default {
     newBlueprint: "Cetak Biru Baru",
     dishName: "Nama Masakan",
     sellingPrice: "Harga Jual",
-    addRequirement: "Tambah Kebutuhan Bahan"
+    addRequirement: "Tambah Kebutuhan Bahan",
+    targetPrice: "Harga Target",
+    ingredients: "Bahan",
+    configureFormula: "Konfigurasi Formula",
+    noFormula: "Belum ada formula yang ditentukan."
   },
   production: {
     hall: "Aula Produksi",
@@ -80,7 +117,20 @@ export default {
     cookNow: "Masak Sekarang",
     cookingPrep: "Persiapan Memasak",
     portionsToCook: "Porsi untuk Dimasak (Pax)",
-    recordAdd: "Catat & Tambah Stok"
+    recordAdd: "Catat & Tambah Stok",
+    lowCookedStock: "Stok Masakan Rendah",
+    recordDesc: "Mencatat batch ini akan secara otomatis mengurangi semua bahan baku yang diperlukan dari inventaris Anda.",
+    successCook: "batch telah ditambahkan ke stok."
+  },
+  productionLog: {
+    title: "Log Produksi",
+    desc: "Audit trail dari semua persiapan batch dan konsumsi bahan.",
+    timestamp: "Waktu",
+    product: "Produk",
+    output: "Output",
+    consumption: "Konsumsi",
+    itemsUsed: "Bahan Digunakan",
+    inventoryDeducted: "Inventaris Dikurangi"
   },
   pos: {
     floorPlan: "Denah Lantai",
@@ -94,13 +144,75 @@ export default {
     cartEmpty: "Keranjang kosong",
     selectTable: "Pilih meja untuk memulai",
     ready: "siap",
-    out: "Habis"
+    out: "Habis",
+    tablesAvailable: "Meja Tersedia",
+    orderingFor: "Memesan untuk",
+    selectedTable: "Meja Terpilih",
+    tableIdentifier: "Identitas Meja",
+    seatingCapacity: "Kapasitas Tempat Duduk",
+    customerBooker: "Nama Pelanggan / Pemesan",
+    activeBills: "Tagihan Aktif",
+    pendingPayments: "Pembayaran Tertunda",
+    noBills: "Tidak ada tagihan tertunda.",
+    allClear: "Semua beres!",
+    billDetails: "Detail Tagihan",
+    selectBillDesc: "Pilih tagihan aktif untuk melihat detail dan memproses pembayaran",
+    successPayment: "Pesanan telah dibayar dan inventaris diperbarui."
+  },
+  reports: {
+    title: "Riwayat Keuangan",
+    desc: "Tinjau performa restoran dan data penjualan Anda.",
+    totalRevenue: "Total Pendapatan",
+    ordersCompleted: "Pesanan Selesai",
+    transaction: "Transaksi",
+    customer: "Pelanggan",
+    table: "Meja",
+    amount: "Jumlah",
+    orderItems: "Item Pesanan"
+  },
+  employees: {
+    title: "Manajemen Staf",
+    desc: "Kelola akun karyawan dan peran keamanan mereka.",
+    addEmployee: "Tambah Karyawan",
+    manageRoles: "Kelola Peran",
+    username: "Nama Pengguna",
+    assignedRole: "Peran Ditugaskan",
+    createStaff: "Buat Akun Staf",
+    newEmployee: "Karyawan Baru",
+    tempPassword: "Kata Sandi Sementara",
+    assignRole: "Tugaskan Peran",
+    removeEmployee: "Hapus Karyawan"
+  },
+  roles: {
+    title: "Peran Keamanan",
+    desc: "Tentukan tingkat akses untuk anggota staf Anda.",
+    createRole: "Buat Peran Baru",
+    managePermissions: "Kelola Izin",
+    roleName: "Nama Peran",
+    pagePermissions: "Izin Halaman",
+    noPermissions: "Tidak ada izin yang ditugaskan."
+  },
+  guide: {
+    title: "Memahami Invent Story",
+    desc: "Setiap cerita dimulai dengan cerita kecil. Berikut cara mengelola restoran Anda dari dapur hingga mesin kasir.",
+    coreFlow: "Alur Operasional Inti",
+    securityTitle: "Keamanan Tingkat Perusahaan",
+    securityDesc: "Invent Story menggunakan arsitektur multi-tenant yang ketat. Setiap data—dari bahan hingga laporan penjualan—terisolasi secara digital untuk restoran spesifik Anda.",
+    manageAccess: "Kelola Akses Staf",
+    dataIsolation: "Isolasi Data",
+    roleControl: "Kontrol Peran",
+    stockTracking: "Pelacakan Stok",
+    paymentFlow: "Alur Pembayaran"
   },
   settings: {
     title: "Pengaturan Akun & Tenant",
     language: "Bahasa Aplikasi",
     currency: "Mata Uang Sistem",
     tenantName: "Nama Restoran",
-    saveSettings: "Simpan Semua Perubahan"
+    saveSettings: "Simpan Semua Perubahan",
+    localization: "Lokalisasi",
+    localizationDesc: "Sesuaikan bahasa dan mata uang Anda untuk mencocokkan kebutuhan pasar lokal Anda.",
+    tenantProfile: "Profil Tenant",
+    tenantProfileDesc: "Nama ini akan muncul di dasbor dan laporan internal Anda."
   }
 };

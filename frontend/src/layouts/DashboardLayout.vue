@@ -78,7 +78,7 @@ const navItems = computed<NavItem[]>(() => {
     },
     { 
       type: 'item',
-      name: 'System Guide', 
+      name: t('common.guide'), 
       path: '/guide', 
       icon: HelpCircle,
       permission: 'dashboard'
@@ -86,7 +86,7 @@ const navItems = computed<NavItem[]>(() => {
     {
       type: 'group',
       id: 'kitchen',
-      name: 'Kitchen & Storage',
+      name: t('common.kitchenStorage'),
       icon: Package,
       children: [
         { name: t('common.inventory'), path: '/inventory', icon: Package, permission: 'inventory' },
@@ -98,7 +98,7 @@ const navItems = computed<NavItem[]>(() => {
     {
       type: 'group',
       id: 'sales',
-      name: 'Sales & Floor',
+      name: t('common.salesFloor'),
       icon: Utensils,
       children: [
         { name: 'New Order', path: '/pos/order', icon: Utensils, permission: 'pos_order' },
@@ -108,7 +108,7 @@ const navItems = computed<NavItem[]>(() => {
     {
       type: 'group',
       id: 'admin',
-      name: 'Administration',
+      name: t('common.administration'),
       icon: Users,
       children: [
         { name: 'Order History', path: '/reports/orders', icon: LineChart, permission: 'order_history' },
@@ -181,7 +181,7 @@ const languages = [
 
           <!-- Collapsible Group -->
           <div v-else-if="nav.type === 'group'" class="space-y-1 mb-2 pt-2">
-            <!-- Group Header (Only visible if not collapsed) -->
+            <!-- Group Header -->
             <div 
               v-if="!isSidebarCollapsed"
               @click="toggleGroup(nav.id!)"
@@ -217,7 +217,7 @@ const languages = [
           class="flex items-center w-full px-4 py-3 text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all rounded-2xl group relative"
         >
           <LogOut class="w-5 h-5 flex-shrink-0" />
-          <span v-if="!isSidebarCollapsed" class="ml-3 font-bold text-sm">{{ $t('common.logout') }}</span>
+          <span v-if="!isSidebarCollapsed" class="ml-3 font-bold text-sm">{{ t('common.logout') }}</span>
           <div v-if="isSidebarCollapsed" class="absolute left-14 bg-red-600 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-xl font-black uppercase tracking-widest">Logout</div>
         </button>
         

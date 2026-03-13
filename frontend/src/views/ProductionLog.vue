@@ -2,8 +2,10 @@
 import { ref, onMounted } from 'vue';
 import DashboardLayout from '../layouts/DashboardLayout.vue';
 import api from '../api/axios';
+import { useI18n } from 'vue-i18n';
 import { History, Calendar, ChefHat, ChevronDown, ChevronRight, PackageOpen } from 'lucide-vue-next';
 
+const { t } = useI18n();
 const logs = ref<any[]>([]);
 const loading = ref(true);
 const expandedLogs = ref<Record<number, boolean>>({});
@@ -43,9 +45,9 @@ onMounted(fetchLogs);
         <div>
           <h1 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-3">
             <History class="w-8 h-8 text-indigo-600" />
-            {{ $t('common.productionLog') }}
+            {{ t('productionLog.title') }}
           </h1>
-          <p class="text-slate-500 font-medium mt-1">Audit trail of all batch preparations and ingredient consumption.</p>
+          <p class="text-slate-500 font-medium mt-1">{{ t('productionLog.desc') }}</p>
         </div>
       </div>
 
@@ -55,10 +57,10 @@ onMounted(fetchLogs);
           <thead>
             <tr class="bg-slate-50/50 border-b border-slate-100">
               <th class="w-10 px-4 py-6"></th>
-              <th class="px-4 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Timestamp</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Product</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Output</th>
-              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Consumption</th>
+              <th class="px-4 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ t('productionLog.timestamp') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ t('productionLog.product') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">{{ t('productionLog.output') }}</th>
+              <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">{{ t('productionLog.consumption') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-50">
@@ -70,7 +72,7 @@ onMounted(fetchLogs);
                 <td class="px-4 py-6 text-center">
                   <component 
                     :is="expandedLogs[log.id] ? ChevronDown : ChevronRight" 
-                    class="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors"
+                    class="w-4 h-4 text-slate-300 group-hover:text-indigo-50 transition-colors"
                   />
                 </td>
                 <td class="px-4 py-6">
@@ -98,7 +100,7 @@ onMounted(fetchLogs);
                 <td class="px-8 py-6 text-right">
                   <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100">
                     <PackageOpen class="w-4 h-4" />
-                    <span class="text-[10px] font-black uppercase tracking-widest">{{ log.ingredients?.length || 0 }} Items Used</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">{{ log.ingredients?.length || 0 }} {{ t('productionLog.itemsUsed') }}</span>
                   </div>
                 </td>
               </tr>
@@ -113,11 +115,11 @@ onMounted(fetchLogs);
                       class="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm"
                     >
                       <div class="flex flex-col">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Ingredient</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{{ t('common.inventory') }}</span>
                         <span class="font-black text-slate-800">{{ ing.ingredient_name }}</span>
                       </div>
                       <div class="text-right">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">Consumed</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">{{ t('productionLog.consumption') }}</span>
                         <span class="font-black text-indigo-600">{{ ing.quantity }} <span class="text-[10px] text-slate-400">{{ ing.unit }}</span></span>
                       </div>
                     </div>
@@ -130,7 +132,7 @@ onMounted(fetchLogs);
               <td colspan="5" class="px-8 py-32 text-center">
                 <div class="flex flex-col items-center gap-4 opacity-20">
                   <History class="w-20 h-20 text-slate-400" />
-                  <p class="text-xl font-black text-slate-500 uppercase tracking-[0.2em]">{{ $t('common.noData') }}</p>
+                  <p class="text-xl font-black text-slate-500 uppercase tracking-[0.2em]">{{ t('common.noData') }}</p>
                 </div>
               </td>
             </tr>
