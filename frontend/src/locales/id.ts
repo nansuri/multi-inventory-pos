@@ -54,7 +54,10 @@ export default {
     qty: "Jumlah",
     current: "Saat Ini",
     success: "Berhasil",
-    error: "Kesalahan"
+    error: "Kesalahan",
+    day: "Hari",
+    week: "Minggu",
+    month: "Bulan"
   },
   dashboard: {
     overview: "Ikhtisar Sistem",

@@ -54,7 +54,10 @@ export default {
     qty: "Qty",
     current: "Current",
     success: "Success",
-    error: "Error"
+    error: "Error",
+    day: "Day",
+    week: "Week",
+    month: "Month"
   },
   dashboard: {
     overview: "System Overview",

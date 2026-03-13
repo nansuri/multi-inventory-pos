@@ -94,7 +94,7 @@ onMounted(fetchSummary);
             <div class="p-3 bg-red-50 rounded-2xl text-red-600">
               <AlertTriangle class="w-6 h-6" />
             </div>
-            <span v-if="summary.low_stock_items > 0" class="bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-full uppercase">Action Required</span>
+            <span v-if="summary.low_stock_items > 0" class="bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-full uppercase">{{ $t('dashboard.actionRequired') }}</span>
           </div>
           <div>
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{{ $t('dashboard.lowStockAlerts') }}</p>

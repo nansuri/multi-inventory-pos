@@ -66,7 +66,7 @@ onMounted(fetchHistory);
             class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
             :class="period === p ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-400 hover:text-slate-600'"
           >
-            {{ p }}
+            {{ t(`common.${p}`) }}
           </button>
         </div>
       </div>
@@ -83,7 +83,7 @@ onMounted(fetchHistory);
             </div>
           </div>
           <div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">{{ t('reports.totalRevenue') }} ({{ period }})</p>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">{{ t('reports.totalRevenue') }} ({{ t(`common.${period}`) }})</p>
             <p class="text-5xl font-black text-slate-800">{{ configStore.formatCurrency(totalRevenue) }}</p>
           </div>
         </div>

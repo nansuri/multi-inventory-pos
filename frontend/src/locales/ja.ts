@@ -46,7 +46,18 @@ export default {
     alreadyHaveAccount: "アカウントをお持ちですか？",
     welcomeBack: "おかえりなさい",
     tagline: "すべての物語は小さな物語から始まります",
-    restaurantName: "店舗名"
+    restaurantName: "店舗名",
+    pax: "人前",
+    customer: "顧客",
+    table: "テーブル",
+    total: "合計",
+    qty: "数量",
+    current: "現在",
+    success: "成功",
+    error: "エラー",
+    day: "日",
+    week: "週",
+    month: "月"
   },
   dashboard: {
     overview: "システム概要",
@@ -62,7 +73,8 @@ export default {
     addInventory: "在庫追加",
     productionReady: "調理の準備はいいですか？",
     productionDesc: "レシピを確認し、販売可能な在庫を増やすために調理を開始してください。",
-    goToProduction: "調理場へ移動"
+    goToProduction: "調理場へ移動",
+    actionRequired: "対応が必要"
   },
   inventory: {
     addIngredient: "材料を追加",
@@ -79,7 +91,11 @@ export default {
     minAlert: "最小アラート",
     adjustmentQty: "調整数量",
     stockNote: "増加は (+)、減少は (-) を使用してください。",
-    scan: "スキャン"
+    scan: "スキャン",
+    successAdd: "新しい材料が追加されました。",
+    successUpdate: "材料の詳細が更新されました。",
+    successStock: "在庫が調整されました。",
+    successDelete: "材料が削除されました。"
   },
   recipes: {
     blueprints: "レシピ設計図",
@@ -90,7 +106,11 @@ export default {
     newBlueprint: "新規設計図",
     dishName: "料理名",
     sellingPrice: "販売価格",
-    addRequirement: "必要材料を追加"
+    addRequirement: "必要材料を追加",
+    targetPrice: "目標価格",
+    ingredients: "材料",
+    configureFormula: "配合を設定",
+    noFormula: "配合がまだ定義されていません。"
   },
   production: {
     hall: "調理場",
@@ -101,7 +121,9 @@ export default {
     cookingPrep: "調理準備",
     portionsToCook: "調理数量 (人前)",
     recordAdd: "記録して在庫を追加",
-    lowCookedStock: "調理済み在庫不足"
+    lowCookedStock: "調理済み在庫不足",
+    recordDesc: "このバッチを記録すると、必要な原材料が在庫から自動的に差し引かれます。",
+    successCook: "バッチが在庫に追加されました。"
   },
   productionLog: {
     title: "生産ログ",
@@ -130,7 +152,15 @@ export default {
     orderingFor: "注文中：",
     selectedTable: "選択されたテーブル",
     tableIdentifier: "テーブル識別子",
-    seatingCapacity: "座席数"
+    seatingCapacity: "座席数",
+    customerBooker: "顧客名 / 予約名",
+    activeBills: "有効な請求",
+    pendingPayments: "未払い",
+    noBills: "未払いの請求はありません。",
+    allClear: "すべて完了！",
+    billDetails: "請求詳細",
+    selectBillDesc: "請求を選択して詳細を表示し、会計を行ってください",
+    successPayment: "会計が完了し、在庫が更新されました。"
   },
   reports: {
     title: "財務履歴",
@@ -162,7 +192,8 @@ export default {
     createRole: "新規ロール作成",
     managePermissions: "権限を管理",
     roleName: "ロール名",
-    pagePermissions: "ページ権限"
+    pagePermissions: "ページ権限",
+    noPermissions: "権限が割り当てられていません。"
   },
   guide: {
     title: "Invent Storyを理解する",
@@ -170,13 +201,21 @@ export default {
     coreFlow: "コア業務フロー",
     securityTitle: "エンタープライズ級のセキュリティ",
     securityDesc: "Invent Storyは厳格なマルチテナントアーキテクチャを使用しています。材料から売上レポートまで、すべてのデータは特定のレストラン向けにデジタル的に隔離されています。",
-    manageAccess: "スタッフアクセスを管理"
+    manageAccess: "スタッフアクセスを管理",
+    dataIsolation: "データ隔離",
+    roleControl: "ロール管理",
+    stockTracking: "在庫追跡",
+    paymentFlow: "会計フロー"
   },
   settings: {
     title: "アカウント・テナント設定",
     language: "アプリ言語",
     currency: "システム通貨",
     tenantName: "店舗名",
-    saveSettings: "すべての変更を保存"
+    saveSettings: "すべての変更を保存",
+    localization: "地域設定",
+    localizationDesc: "現地の市場要件に合わせて言語と通貨を調整します。",
+    tenantProfile: "テナントプロフィール",
+    tenantProfileDesc: "この名前はダッシュボードと内部レポートに表示されます。"
   }
 };
