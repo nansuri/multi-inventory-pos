@@ -9,6 +9,8 @@ import (
 type Product struct {
 	ID        uint           `gorm:"primaryKey" json:"id"`
 	TenantID  uint           `gorm:"not null;index" json:"tenant_id"`
+	BranchID  uint           `gorm:"not null;index" json:"branch_id"`
+	Branch    Branch         `gorm:"foreignKey:BranchID" json:"branch,omitempty"`
 	Name      string         `gorm:"not null" json:"name"`
 	Price     float64        `gorm:"type:decimal(10,2)" json:"price"`
 	Stock     float64        `gorm:"type:decimal(10,2);default:0" json:"stock"`
@@ -33,6 +35,8 @@ type Recipe struct {
 type ProductionLog struct {
 	ID          uint                     `gorm:"primaryKey" json:"id"`
 	TenantID    uint                     `gorm:"not null;index" json:"tenant_id"`
+	BranchID    uint                     `gorm:"not null;index" json:"branch_id"`
+	Branch      Branch                   `gorm:"foreignKey:BranchID" json:"branch,omitempty"`
 	ProductID   uint                     `gorm:"not null;index" json:"product_id"`
 	Product     Product                  `gorm:"foreignKey:ProductID" json:"product,omitempty"`
 	Pax         int                      `gorm:"not null" json:"pax"`
@@ -50,10 +54,10 @@ type ProductionIngredientLog struct {
 
 type ProductRepository interface {
 	CreateProduct(product *Product) error
-	GetProductByID(id uint, tenantID uint) (*Product, error)
-	ListProducts(tenantID uint) ([]Product, error)
+	GetProductByID(id uint, branchID uint) (*Product, error)
+	ListProducts(branchID uint) ([]Product, error)
 	UpdateProduct(product *Product) error
-	DeleteProduct(id uint, tenantID uint) error
+	DeleteProduct(id uint, branchID uint) error
 	
 	// Recipe operations
 	AddRecipeItem(recipe *Recipe) error
@@ -62,16 +66,16 @@ type ProductRepository interface {
 
 	// Production Log
 	CreateProductionLog(log *ProductionLog) error
-	ListProductionLogs(tenantID uint) ([]ProductionLog, error)
+	ListProductionLogs(branchID uint) ([]ProductionLog, error)
 }
 
 type ProductUsecase interface {
 	CreateProduct(product *Product) error
-	GetProductByID(id uint, tenantID uint) (*Product, error)
-	ListProducts(tenantID uint) ([]Product, error)
+	GetProductByID(id uint, branchID uint) (*Product, error)
+	ListProducts(branchID uint) ([]Product, error)
 	UpdateProduct(product *Product) error
-	DeleteProduct(id uint, tenantID uint) error
-	SetRecipe(productID uint, tenantID uint, recipes []Recipe) error
-	PrepareProduct(productID uint, tenantID uint, pax int) error
-	ListProductionLogs(tenantID uint) ([]ProductionLog, error)
+	DeleteProduct(id uint, branchID uint) error
+	SetRecipe(productID uint, branchID uint, recipes []Recipe) error
+	PrepareProduct(productID uint, branchID uint, pax int) error
+	ListProductionLogs(branchID uint) ([]ProductionLog, error)
 }

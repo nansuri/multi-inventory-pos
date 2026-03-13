@@ -9,6 +9,7 @@ export default {
     settings: "Pengaturan",
     guide: "Panduan Sistem",
     reports: "Laporan",
+    branches: "Cabang",
     employees: "Karyawan",
     kitchenStorage: "Dapur & Gudang",
     salesFloor: "Penjualan & Lantai",

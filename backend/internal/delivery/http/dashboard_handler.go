@@ -17,8 +17,13 @@ func NewDashboardHandler(u domain.ReportUsecase) *DashboardHandler {
 
 func (h *DashboardHandler) GetSummary(c *gin.Context) {
 	tenantID := c.MustGet("tenant_id").(uint)
+	
+	var branchID uint
+	if bid, exists := c.Get("branch_id"); exists {
+		branchID = bid.(uint)
+	}
 
-	summary, err := h.usecase.GetDashboardSummary(tenantID)
+	summary, err := h.usecase.GetDashboardSummary(tenantID, branchID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -29,9 +34,15 @@ func (h *DashboardHandler) GetSummary(c *gin.Context) {
 
 func (h *DashboardHandler) GetOrderHistory(c *gin.Context) {
 	tenantID := c.MustGet("tenant_id").(uint)
+	
+	var branchID uint
+	if bid, exists := c.Get("branch_id"); exists {
+		branchID = bid.(uint)
+	}
+	
 	period := c.DefaultQuery("period", "day")
 
-	orders, totalRevenue, orderCount, err := h.usecase.GetOrderHistory(tenantID, period)
+	orders, totalRevenue, orderCount, err := h.usecase.GetOrderHistory(tenantID, branchID, period)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -16,6 +16,8 @@ const (
 type Table struct {
 	ID          uint           `gorm:"primaryKey" json:"id"`
 	TenantID    uint           `gorm:"not null;index" json:"tenant_id"`
+	BranchID    uint           `gorm:"not null;index" json:"branch_id"`
+	Branch      Branch         `gorm:"foreignKey:BranchID" json:"branch,omitempty"`
 	TableNumber string         `gorm:"not null" json:"table_number"`
 	Capacity    int            `json:"capacity"`
 	Status      TableStatus    `gorm:"type:varchar(20);default:'available'" json:"status"`
@@ -36,6 +38,8 @@ const (
 type Order struct {
 	ID              uint           `gorm:"primaryKey" json:"id"`
 	TenantID        uint           `gorm:"not null;index" json:"tenant_id"`
+	BranchID        uint           `gorm:"not null;index" json:"branch_id"`
+	Branch          Branch         `gorm:"foreignKey:BranchID" json:"branch,omitempty"`
 	CustomerName    string         `json:"customer_name"`
 	TableID         *uint          `json:"table_id"` // Nullable for Delivery
 	Table           *Table         `json:"table,omitempty"`
@@ -65,23 +69,27 @@ type OrderItem struct {
 
 type OrderRepository interface {
 	CreateTable(table *Table) error
-	GetTableByID(id uint, tenantID uint) (*Table, error)
-	ListTables(tenantID uint) ([]Table, error)
+	GetTableByID(id uint, branchID uint) (*Table, error)
+	ListTables(branchID uint) ([]Table, error)
+	UpdateTable(table *Table) error
 	UpdateTableStatus(id uint, status TableStatus) error
+	DeleteTable(id uint, branchID uint) error
 
 	CreateOrder(order *Order) error
-	GetOrderByID(id uint, tenantID uint) (*Order, error)
-	ListOrders(tenantID uint) ([]Order, error)
-	UpdateOrderStatus(id uint, tenantID uint, status OrderStatus) error
+	GetOrderByID(id uint, branchID uint) (*Order, error)
+	ListOrders(branchID uint) ([]Order, error)
+	UpdateOrderStatus(id uint, branchID uint, status OrderStatus) error
 	UpdateProductStock(productID uint, newStock float64) error
 }
 
 type OrderUsecase interface {
 	CreateTable(table *Table) error
-	ListTables(tenantID uint) ([]Table, error)
+	ListTables(branchID uint) ([]Table, error)
+	UpdateTable(table *Table) error
+	DeleteTable(id uint, branchID uint) error
 	
 	CreateOrder(order *Order) error
-	GetOrderByID(id uint, tenantID uint) (*Order, error)
-	ListOrders(tenantID uint) ([]Order, error)
-	CompleteOrder(orderID uint, tenantID uint) error
+	GetOrderByID(id uint, branchID uint) (*Order, error)
+	ListOrders(branchID uint) ([]Order, error)
+	CompleteOrder(orderID uint, branchID uint) error
 }

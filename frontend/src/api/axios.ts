@@ -11,6 +11,12 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    const branchID = localStorage.getItem('selectedBranchID');
+    if (branchID) {
+      config.headers['X-Branch-ID'] = branchID;
+    }
+    
     return config;
   },
   (error) => {

@@ -43,13 +43,13 @@ func (r *employeeRepository) CreateUser(user *domain.User) error {
 
 func (r *employeeRepository) ListUsers(tenantID uint) ([]domain.User, error) {
 	var users []domain.User
-	err := r.db.Preload("Role").Where("tenant_id = ? AND is_owner = false", tenantID).Find(&users).Error
+	err := r.db.Preload("Role").Preload("Branch").Where("tenant_id = ? AND is_owner = false", tenantID).Find(&users).Error
 	return users, err
 }
 
 func (r *employeeRepository) GetUserByID(id uint, tenantID uint) (*domain.User, error) {
 	var user domain.User
-	err := r.db.Preload("Role").Where("id = ? AND tenant_id = ?", id, tenantID).First(&user).Error
+	err := r.db.Preload("Role").Preload("Branch").Where("id = ? AND tenant_id = ?", id, tenantID).First(&user).Error
 	return &user, err
 }
 

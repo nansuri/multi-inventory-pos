@@ -8,9 +8,10 @@ type DashboardSummary struct {
 	TodayRevenue   float64 `json:"today_revenue"`
 	TotalTables    int64   `json:"total_tables"`
 	OccupiedTables int64   `json:"occupied_tables"`
+	Tables         []Table `json:"tables"`
 }
 
 type ReportUsecase interface {
-	GetDashboardSummary(tenantID uint) (*DashboardSummary, error)
-	GetOrderHistory(tenantID uint, period string) ([]Order, float64, int64, error)
+	GetDashboardSummary(tenantID uint, branchID uint) (*DashboardSummary, error)
+	GetOrderHistory(tenantID uint, branchID uint, period string) ([]Order, float64, int64, error)
 }

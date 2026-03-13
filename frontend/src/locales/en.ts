@@ -9,6 +9,7 @@ export default {
     settings: "Settings",
     guide: "System Guide",
     reports: "Reports",
+    branches: "Branches",
     employees: "Employees",
     kitchenStorage: "Kitchen & Storage",
     salesFloor: "Sales & Floor",

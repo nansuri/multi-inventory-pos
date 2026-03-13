@@ -13,11 +13,14 @@ type User struct {
 	ID           uint           `gorm:"primaryKey" json:"id"`
 	TenantID     uint           `gorm:"not null" json:"tenant_id"`
 	Tenant       Tenant         `gorm:"foreignKey:TenantID" json:"tenant,omitempty"`
+	BranchID     *uint          `json:"branch_id"`
+	Branch       *Branch        `gorm:"foreignKey:BranchID" json:"branch,omitempty"`
 	Username     string         `gorm:"unique;not null" json:"username"`
 	PasswordHash string         `gorm:"not null" json:"-"`
 	RoleID       *uint          `json:"role_id"`
 	Role         *Role          `gorm:"foreignKey:RoleID" json:"role,omitempty"`
 	IsOwner      bool           `gorm:"default:false" json:"is_owner"`
+	IsActive     bool           `gorm:"default:true" json:"is_active"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
@@ -70,7 +73,10 @@ type EmployeeUsecase interface {
 	UpdateRole(role *Role) error
 	DeleteRole(id uint, tenantID uint) error
 
-	CreateEmployee(username, password string, tenantID uint, roleID uint) error
+	CreateEmployee(username, password string, tenantID uint, branchID *uint, roleID uint) error
 	ListEmployees(tenantID uint) ([]User, error)
+	GetEmployeeByID(id uint, tenantID uint) (*User, error)
+	UpdateEmployee(user *User) error
+	ToggleActive(id uint, tenantID uint) error
 	DeleteEmployee(id uint, tenantID uint) error
 }

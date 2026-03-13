@@ -9,6 +9,7 @@ export default {
     settings: "設定",
     guide: "システムガイド",
     reports: "レポート",
+    branches: "店舗管理",
     employees: "従業員",
     kitchenStorage: "厨房・保管",
     salesFloor: "販売・フロア",

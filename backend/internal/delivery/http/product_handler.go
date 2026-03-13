@@ -18,6 +18,11 @@ func NewProductHandler(u domain.ProductUsecase) *ProductHandler {
 
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 
 	var product domain.Product
 	if err := c.ShouldBindJSON(&product); err != nil {
@@ -26,6 +31,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	}
 
 	product.TenantID = tenantID
+	product.BranchID = branchID.(uint)
 	if err := h.usecase.CreateProduct(&product); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -35,9 +41,13 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) ListProducts(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 
-	products, err := h.usecase.ListProducts(tenantID)
+	products, err := h.usecase.ListProducts(branchID.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,6 +58,11 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	idStr := c.Param("id")
 	id, _ := strconv.ParseUint(idStr, 10, 32)
 
@@ -59,14 +74,12 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 
 	product.ID = uint(id)
 	product.TenantID = tenantID
-	// We use Updates map to avoid zeroing out fields like Stock if not provided
-	if _, err := h.usecase.GetProductByID(product.ID, tenantID); err != nil {
+	product.BranchID = branchID.(uint)
+	if _, err := h.usecase.GetProductByID(product.ID, branchID.(uint)); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "product not found"})
 		return
 	}
 
-	// Assuming usecase.UpdateProduct handles surgical updates or we add one
-	// For now, let's just use the existing one
 	if err := h.usecase.UpdateProduct(&product); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -76,11 +89,15 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	idStr := c.Param("id")
 	id, _ := strconv.ParseUint(idStr, 10, 32)
 
-	if err := h.usecase.DeleteProduct(uint(id), tenantID); err != nil {
+	if err := h.usecase.DeleteProduct(uint(id), branchID.(uint)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -93,7 +110,11 @@ type setRecipeRequest struct {
 }
 
 func (h *ProductHandler) SetRecipe(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	productIDStr := c.Param("id")
 	productID, _ := strconv.ParseUint(productIDStr, 10, 32)
 
@@ -103,7 +124,7 @@ func (h *ProductHandler) SetRecipe(c *gin.Context) {
 		return
 	}
 
-	if err := h.usecase.SetRecipe(uint(productID), tenantID, req.Recipes); err != nil {
+	if err := h.usecase.SetRecipe(uint(productID), branchID.(uint), req.Recipes); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -116,7 +137,11 @@ type prepareRequest struct {
 }
 
 func (h *ProductHandler) Prepare(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	productIDStr := c.Param("id")
 	productID, _ := strconv.ParseUint(productIDStr, 10, 32)
 
@@ -126,7 +151,7 @@ func (h *ProductHandler) Prepare(c *gin.Context) {
 		return
 	}
 
-	if err := h.usecase.PrepareProduct(uint(productID), tenantID, req.Pax); err != nil {
+	if err := h.usecase.PrepareProduct(uint(productID), branchID.(uint), req.Pax); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -135,9 +160,13 @@ func (h *ProductHandler) Prepare(c *gin.Context) {
 }
 
 func (h *ProductHandler) ListPreparations(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 
-	logs, err := h.usecase.ListProductionLogs(tenantID)
+	logs, err := h.usecase.ListProductionLogs(branchID.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
