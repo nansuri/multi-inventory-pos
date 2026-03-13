@@ -1,18 +1,4 @@
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: inventory_db
-    environment:
-      - POSTGRES_USER=${DB_USER:-postgres}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
-      - POSTGRES_DB=${DB_NAME:-inventory}
-    ports:
-      - "${DB_PORT:-5432}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
   redis:
     image: redis:7-alpine
     container_name: inventory_redis
@@ -24,10 +10,45 @@ services:
     networks:
       - app-network
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: inventory_backend
+    ports:
+      - "85:85"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - REDIS_HOST=redis
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - app-network
+      - dashboard_dashboard-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+    container_name: inventory_frontend
+    ports:
+      - "8089:80"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
+  dashboard_dashboard-network:
+    external: true
 
 volumes:
-  postgres_data:
   redis_data:
