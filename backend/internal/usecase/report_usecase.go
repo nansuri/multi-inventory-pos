@@ -15,31 +15,48 @@ func NewReportUsecase(db *gorm.DB) domain.ReportUsecase {
 	return &reportUsecase{db: db}
 }
 
-func (u *reportUsecase) GetDashboardSummary(tenantID uint) (*domain.DashboardSummary, error) {
+func (u *reportUsecase) GetDashboardSummary(tenantID uint, branchID uint) (*domain.DashboardSummary, error) {
 	var summary domain.DashboardSummary
 	now := time.Now()
 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 
+	// Helper to handle optional branch filtering
+	scopedDB := func(model interface{}) *gorm.DB {
+		db := u.db.Model(model).Where("tenant_id = ?", tenantID)
+		if branchID != 0 {
+			db = db.Where("branch_id = ?", branchID)
+		}
+		return db
+	}
+
 	// 1. Inventory stats
-	u.db.Model(&domain.Item{}).Where("tenant_id = ?", tenantID).Count(&summary.TotalItems)
-	u.db.Model(&domain.Item{}).Where("tenant_id = ? AND current_stock <= min_stock_alert", tenantID).Count(&summary.LowStockItems)
+	scopedDB(&domain.Item{}).Count(&summary.TotalItems)
+	scopedDB(&domain.Item{}).Where("current_stock <= min_stock_alert").Count(&summary.LowStockItems)
 
 	// 2. Product stats
-	u.db.Model(&domain.Product{}).Where("tenant_id = ?", tenantID).Count(&summary.TotalProducts)
+	scopedDB(&domain.Product{}).Count(&summary.TotalProducts)
 
 	// 3. Order stats (Today)
-	u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ?", tenantID, startOfDay).Count(&summary.TodayOrders)
-	u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startOfDay, domain.OrderCompleted).
+	scopedDB(&domain.Order{}).Where("created_at >= ?", startOfDay).Count(&summary.TodayOrders)
+	scopedDB(&domain.Order{}).Where("created_at >= ? AND status = ?", startOfDay, domain.OrderCompleted).
 		Select("COALESCE(SUM(total_price), 0)").Scan(&summary.TodayRevenue)
 
 	// 4. Table stats
-	u.db.Model(&domain.Table{}).Where("tenant_id = ?", tenantID).Count(&summary.TotalTables)
-	u.db.Model(&domain.Table{}).Where("tenant_id = ? AND status = ?", tenantID, domain.TableOccupied).Count(&summary.OccupiedTables)
+	scopedDB(&domain.Table{}).Count(&summary.TotalTables)
+	scopedDB(&domain.Table{}).Where("status = ?", domain.TableOccupied).Count(&summary.OccupiedTables)
+	
+	// Fetch actual tables for floor plan view
+	if branchID != 0 {
+		u.db.Where("tenant_id = ? AND branch_id = ?", tenantID, branchID).Order("table_number asc").Find(&summary.Tables)
+	} else {
+		// For aggregated, maybe don't show specific tables or show all
+		u.db.Where("tenant_id = ?", tenantID).Order("branch_id, table_number asc").Find(&summary.Tables)
+	}
 
 	return &summary, nil
 }
 
-func (u *reportUsecase) GetOrderHistory(tenantID uint, period string) ([]domain.Order, float64, int64, error) {
+func (u *reportUsecase) GetOrderHistory(tenantID uint, branchID uint, period string) ([]domain.Order, float64, int64, error) {
 	var orders []domain.Order
 	var totalRevenue float64
 	var orderCount int64
@@ -51,7 +68,6 @@ func (u *reportUsecase) GetOrderHistory(tenantID uint, period string) ([]domain.
 	case "day":
 		startTime = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	case "week":
-		// Assume week starts on Monday
 		offset := int(now.Weekday()) - 1
 		if offset < 0 {
 			offset = 6
@@ -64,15 +80,21 @@ func (u *reportUsecase) GetOrderHistory(tenantID uint, period string) ([]domain.
 	}
 
 	query := u.db.Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted)
+	if branchID != 0 {
+		query = query.Where("branch_id = ?", branchID)
+	}
 	
 	err := query.Preload("Table").Preload("Items.Product").Order("created_at desc").Find(&orders).Error
 	if err != nil {
 		return nil, 0, 0, err
 	}
 
-	u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted).Count(&orderCount)
-	u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted).
-		Select("COALESCE(SUM(total_price), 0)").Scan(&totalRevenue)
+	countQuery := u.db.Model(&domain.Order{}).Where("tenant_id = ? AND created_at >= ? AND status = ?", tenantID, startTime, domain.OrderCompleted)
+	if branchID != 0 {
+		countQuery = countQuery.Where("branch_id = ?", branchID)
+	}
+	countQuery.Count(&orderCount)
+	countQuery.Select("COALESCE(SUM(total_price), 0)").Scan(&totalRevenue)
 
 	return orders, totalRevenue, orderCount, nil
 }

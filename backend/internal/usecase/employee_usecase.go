@@ -29,7 +29,7 @@ func (u *employeeUsecase) DeleteRole(id uint, tenantID uint) error {
 	return u.repo.DeleteRole(id, tenantID)
 }
 
-func (u *employeeUsecase) CreateEmployee(username, password string, tenantID uint, roleID uint) error {
+func (u *employeeUsecase) CreateEmployee(username, password string, tenantID uint, branchID *uint, roleID uint) error {
 	hashedPassword, err := auth.HashPassword(password)
 	if err != nil {
 		return err
@@ -39,6 +39,7 @@ func (u *employeeUsecase) CreateEmployee(username, password string, tenantID uin
 		Username:     username,
 		PasswordHash: hashedPassword,
 		TenantID:     tenantID,
+		BranchID:     branchID,
 		RoleID:       &roleID,
 		IsOwner:      false,
 	}
@@ -48,6 +49,24 @@ func (u *employeeUsecase) CreateEmployee(username, password string, tenantID uin
 
 func (u *employeeUsecase) ListEmployees(tenantID uint) ([]domain.User, error) {
 	return u.repo.ListUsers(tenantID)
+}
+
+func (u *employeeUsecase) GetEmployeeByID(id uint, tenantID uint) (*domain.User, error) {
+	return u.repo.GetUserByID(id, tenantID)
+}
+
+func (u *employeeUsecase) UpdateEmployee(user *domain.User) error {
+	return u.repo.UpdateUser(user)
+}
+
+func (u *employeeUsecase) ToggleActive(id uint, tenantID uint) error {
+	user, err := u.repo.GetUserByID(id, tenantID)
+	if err != nil {
+		return err
+	}
+
+	user.IsActive = !user.IsActive
+	return u.repo.UpdateUser(user)
 }
 
 func (u *employeeUsecase) DeleteEmployee(id uint, tenantID uint) error {

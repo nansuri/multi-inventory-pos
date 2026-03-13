@@ -28,8 +28,9 @@ func (h *TenantHandler) GetTenant(c *gin.Context) {
 }
 
 type updateTenantRequest struct {
-	Name     string `json:"name" binding:"required"`
-	Currency string `json:"currency" binding:"required"`
+	TenantName string `json:"tenant_name" binding:"required"`
+	Currency   string `json:"currency" binding:"required"`
+	Language   string `json:"language" binding:"required"`
 }
 
 func (h *TenantHandler) UpdateTenant(c *gin.Context) {
@@ -41,7 +42,7 @@ func (h *TenantHandler) UpdateTenant(c *gin.Context) {
 		return
 	}
 
-	if err := h.usecase.UpdateTenant(tenantID, req.Name, req.Currency); err != nil {
+	if err := h.usecase.UpdateTenant(tenantID, req.TenantName, req.Currency, req.Language); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

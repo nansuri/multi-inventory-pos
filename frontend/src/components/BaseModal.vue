@@ -33,28 +33,28 @@ defineEmits(['close']);
             leave-to-class="opacity-0 scale-95"
           >
             <div 
-              class="w-full transform overflow-hidden rounded-[3rem] bg-white dark:bg-slate-900 p-10 text-left align-middle shadow-2xl transition-all border border-slate-100 dark:border-slate-800"
+              class="w-full transform overflow-hidden rounded-[2rem] bg-white dark:bg-slate-900 p-8 text-left align-middle shadow-2xl transition-all border border-slate-100 dark:border-slate-800"
               :class="maxWidth || 'max-w-xl'"
             >
-              <div class="flex items-start justify-between mb-8">
-                <div class="flex items-center gap-5">
-                  <div v-if="icon" class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl text-indigo-600 dark:text-indigo-400">
-                    <component :is="icon" class="w-6 h-6" />
+              <div class="flex items-start justify-between mb-6">
+                <div class="flex items-center gap-4">
+                  <div v-if="icon" class="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
+                    <component :is="icon" class="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100 leading-none mb-1">
+                    <h3 class="text-xl font-black text-slate-800 dark:text-slate-100 leading-none mb-1">
                       {{ title }}
                     </h3>
-                    <p v-if="subtitle" class="text-sm font-medium text-slate-400 dark:text-slate-500">
+                    <p v-if="subtitle" class="text-xs font-medium text-slate-400 dark:text-slate-500">
                       {{ subtitle }}
                     </p>
                   </div>
                 </div>
                 <button 
                   @click="$emit('close')"
-                  class="p-2 text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all"
+                  class="p-1.5 text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-all"
                 >
-                  <X class="w-6 h-6" />
+                  <X class="w-5 h-5" />
                 </button>
               </div>
 

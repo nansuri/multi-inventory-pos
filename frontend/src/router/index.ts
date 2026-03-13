@@ -7,96 +7,102 @@ const router = createRouter({
     {
       path: '/login',
       name: 'Login',
-      component: () => import('../views/Login.vue'),
+      component: () => import('../views/Auth.vue'),
     },
     {
       path: '/register',
       name: 'Register',
-      component: () => import('../views/Register.vue'),
+      component: () => import('../views/Auth.vue'),
     },
     {
       path: '/',
-      name: 'Dashboard',
-      component: () => import('../views/Dashboard.vue'),
+      component: () => import('../views/DashboardShell.vue'),
       meta: { requiresAuth: true },
-    },
-    {
-      path: '/inventory',
-      name: 'Inventory',
-      component: () => import('../views/Inventory.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/recipes',
-      name: 'Recipe Management',
-      component: () => import('../views/Recipes.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/products',
-      name: 'Production & Stock',
-      component: () => import('../views/Products.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/pos/order',
-      name: 'POS Order',
-      component: () => import('../views/POSOrder.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/pos/payment',
-      name: 'POS Payment',
-      component: () => import('../views/POSPayment.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/roles',
-      name: 'Roles',
-      component: () => import('../views/Roles.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/employees',
-      name: 'Employees',
-      component: () => import('../views/Employees.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/reports/orders',
-      name: 'Order History',
-      component: () => import('../views/OrderHistory.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/preparations',
-      name: 'Production Log',
-      component: () => import('../views/ProductionLog.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/settings',
-      name: 'Settings',
-      component: () => import('../views/Settings.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/guide',
-      name: 'System Guide',
-      component: () => import('../views/Guide.vue'),
-      meta: { requiresAuth: true },
+      children: [
+        {
+          path: '',
+          name: 'Dashboard',
+          component: () => import('../views/Dashboard.vue'),
+        },
+        {
+          path: 'inventory',
+          name: 'Inventory',
+          component: () => import('../views/Inventory.vue'),
+        },
+        {
+          path: 'recipes',
+          name: 'Recipe Management',
+          component: () => import('../views/Recipes.vue'),
+        },
+        {
+          path: 'products',
+          name: 'Production & Stock',
+          component: () => import('../views/Products.vue'),
+        },
+        {
+          path: 'pos/order',
+          name: 'POS Order',
+          component: () => import('../views/POSOrder.vue'),
+        },
+        {
+          path: 'pos/payment',
+          name: 'POS Payment',
+          component: () => import('../views/POSPayment.vue'),
+        },
+        {
+          path: 'branches',
+          name: 'Branch Manager',
+          component: () => import('../views/Branches.vue'),
+        },
+        {
+          path: 'tables',
+          name: 'Table Management',
+          component: () => import('../views/Tables.vue'),
+        },
+        {
+          path: 'roles',
+          name: 'Roles',
+          component: () => import('../views/Roles.vue'),
+        },
+        {
+          path: 'employees',
+          name: 'Employees',
+          component: () => import('../views/Employees.vue'),
+        },
+        {
+          path: 'reports/orders',
+          name: 'Order History',
+          component: () => import('../views/OrderHistory.vue'),
+        },
+        {
+          path: 'preparations',
+          name: 'Production Log',
+          component: () => import('../views/ProductionLog.vue'),
+        },
+        {
+          path: 'settings',
+          name: 'Settings',
+          component: () => import('../views/Settings.vue'),
+        },
+        {
+          path: 'guide',
+          name: 'System Guide',
+          component: () => import('../views/Guide.vue'),
+        },
+      ]
     },
   ],
 });
 
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore();
+  
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login');
-  } else if ((to.path === '/login' || to.path === '/register') && authStore.isAuthenticated) {
-    next('/');
-  } else {
-    next();
+    return '/login';
+  } 
+  
+  if ((to.path === '/login' || to.path === '/register') && authStore.isAuthenticated) {
+    return '/';
   }
 });
 

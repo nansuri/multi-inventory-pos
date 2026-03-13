@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import DashboardLayout from '../layouts/DashboardLayout.vue';
 import api from '../api/axios';
 import { useConfigStore } from '../stores/config';
 import { useI18n } from 'vue-i18n';
@@ -20,7 +19,8 @@ const settings = ref({
 const saveSettings = async () => {
   loading.value = true;
   try {
-    await api.put('/api/tenant/settings', settings.value);
+    // Fixed: Using PATCH /api/tenant to match backend route
+    await api.patch('/api/tenant', settings.value);
     
     // Update local store immediately
     configStore.setLanguage(settings.value.language);
@@ -47,89 +47,85 @@ onMounted(async () => {
 </script>
 
 <template>
-  <DashboardLayout>
-    <div class="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div>
-        <h1 class="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
-          <Settings class="w-8 h-8 text-indigo-600" />
-          {{ t('settings.title') }}
-        </h1>
-      </div>
+  <div class="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
+    <div>
+      <h1 class="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-2">
+        <Settings class="w-6 h-6 text-indigo-600" />
+        {{ t('settings.title') }}
+      </h1>
+    </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Sidebar Info -->
-        <div class="space-y-8">
-          <div class="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
-            <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
-              <Globe class="w-6 h-6" />
-            </div>
-            <h3 class="font-black text-slate-800 dark:text-slate-100 mb-2">{{ t('settings.localization') }}</h3>
-            <p class="text-xs text-slate-400 dark:text-slate-500 font-medium leading-relaxed">{{ t('settings.localizationDesc') }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Sidebar Info -->
+      <div class="space-y-4">
+        <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
+            <Globe class="w-5 h-5" />
           </div>
-
-          <div class="p-6 bg-indigo-600 rounded-3xl shadow-xl shadow-indigo-100 dark:shadow-none text-white">
-            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white mb-4">
-              <Store class="w-6 h-6" />
-            </div>
-            <h3 class="font-black mb-2">{{ t('settings.tenantProfile') }}</h3>
-            <p class="text-xs text-indigo-100 dark:text-indigo-200 font-medium leading-relaxed">{{ t('settings.tenantProfileDesc') }}</p>
-          </div>
+          <h3 class="font-black text-sm text-slate-800 dark:text-slate-100 mb-1.5">{{ t('settings.localization') }}</h3>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-relaxed">{{ t('settings.localizationDesc') }}</p>
         </div>
 
-        <!-- Form Area -->
-        <div class="md:col-span-2 space-y-6">
-          <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 p-10">
-            <form @submit.prevent="saveSettings" class="space-y-8">
-              <div class="space-y-6">
-                <div class="space-y-2">
-                  <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('settings.language') }}</label>
-                  <div class="grid grid-cols-1 gap-3">
-                    <select v-model="settings.language" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none appearance-none dark:text-slate-100">
-                      <option value="en">English (US)</option>
-                      <option value="id">Bahasa Indonesia</option>
-                      <option value="ja">日本語 (Japanese)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('settings.currency') }}</label>
-                  <select v-model="settings.currency" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none appearance-none dark:text-slate-100">
-                    <option value="USD">USD ($)</option>
-                    <option value="IDR">IDR (Rp)</option>
-                    <option value="JPY">JPY (¥)</option>
-                  </select>
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('settings.tenantName') }}</label>
-                  <div class="relative">
-                    <input v-model="settings.tenant_name" type="text" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent rounded-2xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none pl-12 dark:text-slate-100" />
-                    <Store class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 dark:text-slate-600" />
-                  </div>
-                </div>
-              </div>
-
-              <div class="pt-4">
-                <button 
-                  type="submit" 
-                  :disabled="loading"
-                  class="w-full py-5 bg-slate-900 dark:bg-indigo-600 text-white rounded-[1.5rem] font-black flex items-center justify-center gap-3 hover:bg-indigo-600 dark:hover:bg-indigo-700 transition-all shadow-xl shadow-slate-200 dark:shadow-none group disabled:opacity-50"
-                >
-                  <Save v-if="!loading" class="w-5 h-5 text-indigo-400 dark:text-indigo-200 group-hover:text-white transition-colors" />
-                  <span v-else class="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  {{ t('settings.saveSettings') }}
-                </button>
-                
-                <div v-if="success" class="mt-4 flex items-center justify-center gap-2 text-green-600 dark:text-green-400 font-bold animate-in fade-in slide-in-from-top-2">
-                  <CheckCircle class="w-5 h-5" />
-                  Settings updated successfully!
-                </div>
-              </div>
-            </form>
+        <div class="p-5 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-100 dark:shadow-none text-white">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white mb-3">
+            <Store class="w-5 h-5" />
           </div>
+          <h3 class="font-black text-sm mb-1.5">{{ t('settings.tenantProfile') }}</h3>
+          <p class="text-[10px] text-indigo-100 dark:text-indigo-200 font-medium leading-relaxed">{{ t('settings.tenantProfileDesc') }}</p>
+        </div>
+      </div>
+
+      <!-- Form Area -->
+      <div class="md:col-span-2 space-y-4">
+        <div class="bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 p-8">
+          <form @submit.prevent="saveSettings" class="space-y-6">
+            <div class="space-y-4">
+              <div class="space-y-1.5">
+                <label class="block text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('settings.language') }}</label>
+                <select v-model="settings.language" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none appearance-none dark:text-slate-100 text-sm">
+                  <option value="en">English (US)</option>
+                  <option value="id">Bahasa Indonesia</option>
+                  <option value="ja">日本語 (Japanese)</option>
+                </select>
+              </div>
+
+              <div class="space-y-1.5">
+                <label class="block text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('settings.currency') }}</label>
+                <select v-model="settings.currency" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none appearance-none dark:text-slate-100 text-sm">
+                  <option value="USD">USD ($)</option>
+                  <option value="IDR">IDR (Rp)</option>
+                  <option value="JPY">JPY (¥)</option>
+                </select>
+              </div>
+
+              <div class="space-y-1.5">
+                <label class="block text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">{{ t('settings.tenantName') }}</label>
+                <div class="relative">
+                  <input v-model="settings.tenant_name" type="text" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-600 transition-all outline-none pl-10 dark:text-slate-100 text-sm" />
+                  <Store class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 dark:text-slate-600" />
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button 
+                type="submit" 
+                :disabled="loading"
+                class="w-full py-4 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-600 dark:hover:bg-indigo-700 transition-all shadow-lg group disabled:opacity-50"
+              >
+                <Save v-if="!loading" class="w-4 h-4 text-indigo-400 dark:text-indigo-200 group-hover:text-white transition-colors" />
+                <span v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                {{ t('settings.saveSettings') }}
+              </button>
+              
+              <div v-if="success" class="mt-3 flex items-center justify-center gap-1.5 text-green-600 dark:text-green-400 font-bold text-[10px] uppercase tracking-widest animate-in fade-in slide-in-from-top-1">
+                <CheckCircle class="w-3.5 h-3.5" />
+                Settings updated successfully!
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </DashboardLayout>
+  </div>
 </template>

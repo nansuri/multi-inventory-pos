@@ -16,7 +16,7 @@ func (u *tenantUsecase) GetTenant(id uint) (*domain.Tenant, error) {
 	return u.repo.GetTenantByID(id)
 }
 
-func (u *tenantUsecase) UpdateTenant(id uint, name string, currency string) error {
+func (u *tenantUsecase) UpdateTenant(id uint, name string, currency string, language string) error {
 	tenant, err := u.repo.GetTenantByID(id)
 	if err != nil {
 		return err
@@ -24,6 +24,7 @@ func (u *tenantUsecase) UpdateTenant(id uint, name string, currency string) erro
 
 	tenant.Name = name
 	tenant.Currency = currency
+	tenant.Language = language
 
 	return u.repo.UpdateTenant(tenant)
 }

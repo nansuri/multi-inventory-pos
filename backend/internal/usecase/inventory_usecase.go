@@ -18,54 +18,45 @@ func (u *inventoryUsecase) CreateItem(item *domain.Item) error {
 	return u.repo.CreateItem(item)
 }
 
-func (u *inventoryUsecase) GetItemByID(id uint, tenantID uint) (*domain.Item, error) {
-	return u.repo.GetItemByID(id, tenantID)
+func (u *inventoryUsecase) GetItemByID(id uint, branchID uint) (*domain.Item, error) {
+	return u.repo.GetItemByID(id, branchID)
 }
 
-func (u *inventoryUsecase) GetItemByBarcode(barcode string, tenantID uint) (*domain.Item, error) {
-	return u.repo.GetItemByBarcode(barcode, tenantID)
+func (u *inventoryUsecase) GetItemByBarcode(barcode string, branchID uint) (*domain.Item, error) {
+	return u.repo.GetItemByBarcode(barcode, branchID)
 }
 
-func (u *inventoryUsecase) ListItems(tenantID uint) ([]domain.Item, error) {
-	return u.repo.ListItems(tenantID)
+func (u *inventoryUsecase) ListItems(branchID uint) ([]domain.Item, error) {
+	return u.repo.ListItems(branchID)
 }
 
 func (u *inventoryUsecase) UpdateItem(item *domain.Item) error {
 	return u.repo.UpdateItem(item)
 }
 
-func (u *inventoryUsecase) UpdateStock(itemID uint, tenantID uint, quantity float64) error {
-	item, err := u.repo.GetItemByID(itemID, tenantID)
+func (u *inventoryUsecase) UpdateStock(itemID uint, branchID uint, quantity float64) error {
+	item, err := u.repo.GetItemByID(itemID, branchID)
 	if err != nil {
 		return err
 	}
 
-	item.CurrentStock += quantity
-	if item.CurrentStock < 0 {
+	newStock := item.CurrentStock + quantity
+	if newStock < 0 {
 		return errors.New("insufficient stock")
 	}
 
-	// We can use a surgical map update or just pass the object
-	return u.repo.UpdateItem(&domain.Item{
-		ID:           itemID,
-		TenantID:     tenantID,
-		CurrentStock: item.CurrentStock,
-	})
+	return u.repo.UpdateStock(itemID, branchID, newStock)
 }
 
-func (u *inventoryUsecase) DeleteItem(id uint, tenantID uint) error {
-	return u.repo.DeleteItem(id, tenantID)
+func (u *inventoryUsecase) DeleteItem(id uint, branchID uint) error {
+	return u.repo.DeleteItem(id, branchID)
 }
 
-func (u *inventoryUsecase) ToggleActive(id uint, tenantID uint) error {
-	item, err := u.repo.GetItemByID(id, tenantID)
+func (u *inventoryUsecase) ToggleActive(id uint, branchID uint) error {
+	item, err := u.repo.GetItemByID(id, branchID)
 	if err != nil {
 		return err
 	}
 
-	return u.repo.UpdateItem(&domain.Item{
-		ID:       id,
-		TenantID: tenantID,
-		IsActive: !item.IsActive,
-	})
+	return u.repo.UpdateField(id, branchID, "is_active", !item.IsActive)
 }

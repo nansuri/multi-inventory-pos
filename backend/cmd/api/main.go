@@ -27,18 +27,20 @@ func main() {
 
 	// Auto Migration
 	err = db.AutoMigrate(
-		&domain.Tenant{}, 
-		&domain.User{}, 
-		&domain.Item{}, 
-		&domain.Product{}, 
-		&domain.Recipe{}, 
-		&domain.Table{}, 
-		&domain.Order{}, 
-		&domain.OrderItem{}, 
+		&domain.Tenant{},
+		&domain.Branch{},
+		&domain.User{},
+		&domain.Item{},
+		&domain.Product{},
+		&domain.Recipe{},
+		&domain.Table{},
+		&domain.Order{},
+		&domain.OrderItem{},
 		&domain.ProductionLog{},
 		&domain.ProductionIngredientLog{},
 		&domain.Role{},
 	)
+
 	if err != nil {
 		log.Fatalf("Could not auto migrate: %v", err)
 	}
@@ -52,6 +54,7 @@ func main() {
 
 	// Initialize Repository
 	authRepo := repository.NewAuthRepository(db)
+	branchRepo := repository.NewBranchRepository(db)
 	inventoryRepo := repository.NewInventoryRepository(db)
 	productRepo := repository.NewProductRepository(db)
 	orderRepo := repository.NewOrderRepository(db)
@@ -59,16 +62,18 @@ func main() {
 	employeeRepo := repository.NewEmployeeRepository(db)
 
 	// Initialize Usecase
-	authUsecase := usecase.NewAuthUsecase(authRepo, cfg.JWTSecret)
+	authUsecase := usecase.NewAuthUsecase(authRepo, branchRepo, cfg.JWTSecret)
+	branchUsecase := usecase.NewBranchUsecase(branchRepo)
 	inventoryUsecase := usecase.NewInventoryUsecase(inventoryRepo)
 	productUsecase := usecase.NewProductUsecase(productRepo, inventoryRepo)
-	orderUsecase := usecase.NewOrderUsecase(orderRepo, inventoryRepo)
+	orderUsecase := usecase.NewOrderUsecase(orderRepo, inventoryRepo, productRepo)
 	tenantUsecase := usecase.NewTenantUsecase(tenantRepo)
 	employeeUsecase := usecase.NewEmployeeUsecase(employeeRepo)
 	reportUsecase := usecase.NewReportUsecase(db)
 
 	// Initialize Handler
 	authHandler := deliveryHttp.NewAuthHandler(authUsecase)
+	branchHandler := deliveryHttp.NewBranchHandler(branchUsecase)
 	inventoryHandler := deliveryHttp.NewInventoryHandler(inventoryUsecase)
 	productHandler := deliveryHttp.NewProductHandler(productUsecase)
 	orderHandler := deliveryHttp.NewOrderHandler(orderUsecase)
@@ -99,6 +104,7 @@ func main() {
 	// Protected Routes
 	api := r.Group("/api")
 	api.Use(middleware.AuthMiddleware(cfg.JWTSecret))
+	api.Use(middleware.BranchMiddleware())
 	{
 		api.GET("/me", authHandler.Me)
 
@@ -127,6 +133,15 @@ func main() {
 
 		api.GET("/preparations", productHandler.ListPreparations)
 
+		// Branch Routes
+		branches := api.Group("/branches")
+		{
+			branches.POST("", branchHandler.Create)
+			branches.GET("", branchHandler.List)
+			branches.PUT("/:id", branchHandler.Update)
+			branches.DELETE("/:id", branchHandler.Delete)
+		}
+
 		// Tenant Routes
 		api.GET("/tenant", tenantHandler.GetTenant)
 		api.PATCH("/tenant", tenantHandler.UpdateTenant)
@@ -136,6 +151,8 @@ func main() {
 		{
 			tables.POST("", orderHandler.CreateTable)
 			tables.GET("", orderHandler.ListTables)
+			tables.PUT("/:id", orderHandler.UpdateTable)
+			tables.DELETE("/:id", orderHandler.DeleteTable)
 		}
 
 		orders := api.Group("/orders")
@@ -162,6 +179,8 @@ func main() {
 		{
 			employees.POST("", employeeHandler.CreateEmployee)
 			employees.GET("", employeeHandler.ListEmployees)
+			employees.PUT("/:id", employeeHandler.UpdateEmployee)
+			employees.PATCH("/:id/toggle", employeeHandler.ToggleActive)
 			employees.DELETE("/:id", employeeHandler.DeleteEmployee)
 		}
 	}

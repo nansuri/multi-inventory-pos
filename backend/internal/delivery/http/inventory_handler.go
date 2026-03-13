@@ -18,6 +18,11 @@ func NewInventoryHandler(u domain.InventoryUsecase) *InventoryHandler {
 
 func (h *InventoryHandler) CreateItem(c *gin.Context) {
 	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 
 	var item domain.Item
 	if err := c.ShouldBindJSON(&item); err != nil {
@@ -26,6 +31,7 @@ func (h *InventoryHandler) CreateItem(c *gin.Context) {
 	}
 
 	item.TenantID = tenantID
+	item.BranchID = branchID.(uint)
 	if err := h.usecase.CreateItem(&item); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -35,9 +41,13 @@ func (h *InventoryHandler) CreateItem(c *gin.Context) {
 }
 
 func (h *InventoryHandler) ListItems(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 
-	items, err := h.usecase.ListItems(tenantID)
+	items, err := h.usecase.ListItems(branchID.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -47,10 +57,14 @@ func (h *InventoryHandler) ListItems(c *gin.Context) {
 }
 
 func (h *InventoryHandler) GetByBarcode(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	barcode := c.Param("barcode")
 
-	item, err := h.usecase.GetItemByBarcode(barcode, tenantID)
+	item, err := h.usecase.GetItemByBarcode(barcode, branchID.(uint))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "item not found"})
 		return
@@ -61,6 +75,11 @@ func (h *InventoryHandler) GetByBarcode(c *gin.Context) {
 
 func (h *InventoryHandler) UpdateItem(c *gin.Context) {
 	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	idStr := c.Param("id")
 	id, _ := strconv.ParseUint(idStr, 10, 32)
 
@@ -72,6 +91,7 @@ func (h *InventoryHandler) UpdateItem(c *gin.Context) {
 
 	item.ID = uint(id)
 	item.TenantID = tenantID
+	item.BranchID = branchID.(uint)
 	if err := h.usecase.UpdateItem(&item); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,11 +101,15 @@ func (h *InventoryHandler) UpdateItem(c *gin.Context) {
 }
 
 func (h *InventoryHandler) DeleteItem(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	idStr := c.Param("id")
 	id, _ := strconv.ParseUint(idStr, 10, 32)
 
-	if err := h.usecase.DeleteItem(uint(id), tenantID); err != nil {
+	if err := h.usecase.DeleteItem(uint(id), branchID.(uint)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -94,11 +118,15 @@ func (h *InventoryHandler) DeleteItem(c *gin.Context) {
 }
 
 func (h *InventoryHandler) ToggleActive(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	idStr := c.Param("id")
 	id, _ := strconv.ParseUint(idStr, 10, 32)
 
-	if err := h.usecase.ToggleActive(uint(id), tenantID); err != nil {
+	if err := h.usecase.ToggleActive(uint(id), branchID.(uint)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -111,7 +139,11 @@ type updateStockRequest struct {
 }
 
 func (h *InventoryHandler) UpdateStock(c *gin.Context) {
-	tenantID := c.MustGet("tenant_id").(uint)
+	branchID, exists := c.Get("branch_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch context required"})
+		return
+	}
 	itemIDStr := c.Param("id")
 	itemID, _ := strconv.ParseUint(itemIDStr, 10, 32)
 
@@ -121,7 +153,7 @@ func (h *InventoryHandler) UpdateStock(c *gin.Context) {
 		return
 	}
 
-	if err := h.usecase.UpdateStock(uint(itemID), tenantID, req.Quantity); err != nil {
+	if err := h.usecase.UpdateStock(uint(itemID), branchID.(uint), req.Quantity); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DashboardLayout from '../layouts/DashboardLayout.vue';
 import { useI18n } from 'vue-i18n';
 import { 
   Package, 
@@ -8,181 +7,142 @@ import {
   Utensils, 
   CreditCard, 
   LineChart,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-  ShoppingCart
+  ArrowRight
 } from 'lucide-vue-next';
-import { computed } from 'vue';
 
 const { t } = useI18n();
 
-const steps = computed(() => [
+const steps = [
   {
-    title: `1. ${t('common.inventory')} Setup`,
+    id: 1,
+    title: t('common.inventory'),
+    desc: t('guide.step1Desc'),
+    usage: t('guide.step1Usage'),
     icon: Package,
-    color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-50 dark:bg-blue-900/20',
-    desc: t('guide.step1Desc', 'Begin by adding your raw materials (e.g., Rice, Meat, Oil). Define their units (KG, GR, Litre) and set minimum stock alerts to avoid running out.'),
-    usage: t('guide.step1Usage', 'Go to Kitchen & Storage > Inventory.')
+    color: 'indigo'
   },
   {
-    title: `2. Define ${t('common.recipes')}`,
+    id: 2,
+    title: t('common.recipes'),
+    desc: t('guide.step2Desc'),
+    usage: t('guide.step2Usage'),
     icon: BookOpen,
-    color: 'text-indigo-600 dark:text-indigo-400',
-    bg: 'bg-indigo-50 dark:bg-indigo-900/20',
-    desc: t('guide.step2Desc', 'Create "Blueprints" for your dishes. Link your raw ingredients to a menu item and specify exactly how much of each is needed for 1 portion.'),
-    usage: t('guide.step2Usage', 'Go to Kitchen & Storage > Recipe Management.')
+    color: 'blue'
   },
   {
-    title: `3. ${t('common.production')} (Cooking)`,
+    id: 3,
+    title: t('common.production'),
+    desc: t('guide.step3Desc'),
+    usage: t('guide.step3Usage'),
     icon: ChefHat,
-    color: 'text-orange-600 dark:text-orange-400',
-    bg: 'bg-orange-50 dark:bg-orange-900/20',
-    desc: t('guide.step3Desc', 'When the Chef cooks a batch, record it here. The system automatically deducts raw materials from Inventory and increases the "Ready to Sell" stock.'),
-    usage: t('guide.step3Usage', 'Go to Kitchen & Storage > Production Hall.')
+    color: 'orange'
   },
   {
-    title: `4. Take Orders`,
+    id: 4,
+    title: t('dashboard.newOrder'),
+    desc: t('guide.step4Desc'),
+    usage: t('guide.step4Usage'),
     icon: Utensils,
-    color: 'text-pink-600 dark:text-pink-400',
-    bg: 'bg-pink-50 dark:bg-pink-900/20',
-    desc: t('guide.step4Desc', 'Waiters select a table and add cooked products to the cart. This marks the table as "Occupied" and prepares the bill.'),
-    usage: t('guide.step4Usage', 'Go to Sales & Floor > New Order.')
+    color: 'green'
   },
   {
-    title: `5. Process Payments`,
+    id: 5,
+    title: t('pos.processPayment'),
+    desc: t('guide.step5Desc'),
+    usage: t('guide.step5Usage'),
     icon: CreditCard,
-    color: 'text-green-600 dark:text-green-400',
-    bg: 'bg-green-50 dark:bg-green-900/20',
-    desc: t('guide.step5Desc', 'When the customer is ready to leave, process the payment. This finalizes the order, deducts the cooked product stock, and frees the table.'),
-    usage: t('guide.step5Usage', 'Go to Sales & Floor > Payments.')
+    color: 'emerald'
   },
   {
-    title: `6. Review & Analytics`,
+    id: 6,
+    title: t('common.reports'),
+    desc: t('guide.step6Desc'),
+    usage: t('guide.step6Usage'),
     icon: LineChart,
-    color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-50 dark:bg-purple-900/20',
-    desc: t('guide.step6Desc', 'Monitor daily revenue, order trends, and production history. Use these insights to optimize your stock and menu pricing.'),
-    usage: t('guide.step6Usage', 'Check Dashboard or Administration > Order History.')
+    color: 'rose'
   }
-]);
+];
 </script>
 
 <template>
-  <DashboardLayout>
-    <div class="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-700">
-      <!-- Header -->
-      <div class="text-center space-y-4">
-        <h1 class="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-tight">{{ t('guide.title') }}</h1>
-        <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">{{ t('guide.desc') }}</p>
+  <div class="max-w-5xl mx-auto space-y-10 animate-in fade-in duration-700 pb-10">
+    <!-- Header -->
+    <div class="text-center space-y-4">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl border border-indigo-100 dark:border-indigo-900/50">
+        <BookOpen class="w-4 h-4" />
+        <span class="text-[10px] font-black uppercase tracking-[0.2em]">{{ t('common.guide') }}</span>
       </div>
+      <h1 class="text-4xl font-[1000] text-slate-800 dark:text-slate-100 tracking-tighter">{{ t('guide.title') }}</h1>
+      <p class="text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto text-sm">{{ t('guide.desc') }}</p>
+    </div>
 
-      <!-- Business Flow Diagram -->
-      <div class="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden">
-        <div class="absolute top-0 right-0 p-10 opacity-5">
-          <ShieldCheck class="w-40 h-40 text-indigo-600" />
+    <!-- Core Flow -->
+    <div class="relative">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+        <div v-for="step in steps" :key="step.id" class="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-xl transition-all group">
+          <div class="flex justify-between items-start mb-6">
+            <div :class="[
+              'p-3.5 rounded-2xl text-white shadow-lg transition-all group-hover:scale-110 duration-500',
+              step.color === 'indigo' ? 'bg-indigo-600 shadow-indigo-200 dark:shadow-none' :
+              step.color === 'blue' ? 'bg-blue-600 shadow-blue-200 dark:shadow-none' :
+              step.color === 'orange' ? 'bg-orange-500 shadow-orange-200 dark:shadow-none' :
+              step.color === 'green' ? 'bg-green-600 shadow-green-200 dark:shadow-none' :
+              step.color === 'emerald' ? 'bg-emerald-600 shadow-emerald-200 dark:shadow-none' : 'bg-rose-600 shadow-rose-200 dark:shadow-none'
+            ]">
+              <component :is="step.icon" class="w-5 h-5" />
+            </div>
+            <span class="text-3xl font-[1000] text-slate-100 dark:text-slate-800 select-none">{{ step.id }}</span>
+          </div>
+
+          <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 mb-2">{{ step.title }}</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-xs leading-relaxed mb-4 font-medium">{{ step.desc }}</p>
+          
+          <div class="pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
+            <p class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{{ step.usage }}</p>
+            <ArrowRight class="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Info -->
+    <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden">
+      <div class="absolute right-[-5%] top-[-10%] w-[40%] h-[60%] bg-indigo-600/20 rounded-full blur-[100px]"></div>
+      
+      <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10">
+        <div class="flex-1 space-y-4">
+          <h2 class="text-2xl font-[1000] tracking-tighter">{{ t('guide.securityTitle') }}</h2>
+          <p class="text-slate-400 leading-relaxed font-medium text-sm">{{ t('guide.securityDesc') }}</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 bg-white/5 rounded-xl border border-white/10">
+              <p class="text-indigo-400 font-black uppercase tracking-widest text-[8px] mb-0.5">{{ t('guide.manageAccess') }}</p>
+              <p class="text-[10px] font-bold text-slate-300">{{ t('guide.roleControl') }}</p>
+            </div>
+            <div class="p-3 bg-white/5 rounded-xl border border-white/10">
+              <p class="text-indigo-400 font-black uppercase tracking-widest text-[8px] mb-0.5">{{ t('guide.dataIsolation') }}</p>
+              <p class="text-[10px] font-bold text-slate-300">{{ t('guide.stockTracking') }}</p>
+            </div>
+          </div>
         </div>
         
-        <h3 class="text-xl font-black text-slate-800 dark:text-slate-100 mb-10 flex items-center gap-2">
-          <div class="w-2 h-8 bg-indigo-600 rounded-full"></div>
-          {{ t('guide.coreFlow') }}
-        </h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center relative z-10">
-          <div class="flex flex-col items-center text-center gap-3">
-            <div class="w-16 h-16 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center shadow-xl">
-              <Package class="w-8 h-8" />
+        <div class="w-full lg:w-1/3">
+          <div class="bg-white/5 backdrop-blur-md rounded-[2rem] p-6 border border-white/10 space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 rounded-full bg-red-500"></div>
+              <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+              <div class="w-2 h-2 rounded-full bg-green-500"></div>
             </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ t('common.inventory') }}</span>
-          </div>
-          <div class="hidden md:flex justify-center text-slate-200 dark:text-slate-800">
-            <ArrowRight class="w-8 h-8" />
-          </div>
-          <div class="flex flex-col items-center text-center gap-3">
-            <div class="w-16 h-16 rounded-2xl bg-orange-600 text-white flex items-center justify-center shadow-xl">
-              <ChefHat class="w-8 h-8" />
-            </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ t('common.production') }}</span>
-          </div>
-          <div class="hidden md:flex justify-center text-slate-200 dark:text-slate-800">
-            <ArrowRight class="w-8 h-8" />
-          </div>
-          <div class="flex flex-col items-center text-center gap-3">
-            <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-xl">
-              <ShoppingCart class="w-8 h-8" />
-            </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ t('common.pos') }}</span>
-          </div>
-          <div class="hidden md:flex justify-center text-slate-200 dark:text-slate-800">
-            <ArrowRight class="w-8 h-8" />
-          </div>
-          <div class="flex flex-col items-center text-center gap-3">
-            <div class="w-16 h-16 rounded-2xl bg-green-600 text-white flex items-center justify-center shadow-xl">
-              <LineChart class="w-8 h-8" />
-            </div>
-            <span class="font-black text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ t('common.reports') }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step by Step Guide -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div 
-          v-for="(step, index) in steps" 
-          :key="index"
-          class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 flex flex-col group"
-        >
-          <div class="flex items-start justify-between mb-6">
-            <div :class="['p-4 rounded-2xl transition-all group-hover:scale-110', step.bg, step.color]">
-              <component :is="step.icon" class="w-8 h-8" />
-            </div>
-            <span class="text-4xl font-black text-slate-50 dark:text-slate-800 italic opacity-50 group-hover:text-indigo-50 dark:group-hover:text-indigo-900 transition-colors">0{{ index + 1 }}</span>
-          </div>
-          
-          <h4 class="text-xl font-black text-slate-800 dark:text-slate-100 mb-3">{{ step.title }}</h4>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed flex-1">{{ step.desc }}</p>
-          
-          <div class="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-            <CheckCircle2 class="w-4 h-4" />
-            <span class="text-[10px] font-black uppercase tracking-widest">{{ step.usage }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Security & Multi-tenancy Note -->
-      <div class="bg-slate-900 dark:bg-indigo-950 rounded-[3rem] p-12 text-white relative overflow-hidden">
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div class="space-y-6">
-            <h3 class="text-3xl font-black tracking-tight">{{ t('guide.securityTitle') }}</h3>
-            <p class="text-slate-400 dark:text-indigo-200 font-medium leading-relaxed">
-              {{ t('guide.securityDesc') }}
-            </p>
-            <router-link to="/employees" class="inline-flex items-center gap-2 bg-indigo-600 dark:bg-white dark:text-indigo-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-indigo-700 dark:hover:bg-indigo-50 transition-all shadow-xl shadow-indigo-900/20">
-              {{ t('guide.manageAccess') }}
-              <ArrowRight class="w-5 h-5" />
-            </router-link>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="p-6 bg-white/5 dark:bg-black/20 rounded-3xl border border-white/10">
-              <p class="text-2xl font-black mb-1">100%</p>
-              <p class="text-[10px] font-bold text-slate-500 dark:text-indigo-300 uppercase tracking-widest">{{ t('guide.dataIsolation') }}</p>
-            </div>
-            <div class="p-6 bg-white/5 dark:bg-black/20 rounded-3xl border border-white/10">
-              <p class="text-2xl font-black mb-1">RBAC</p>
-              <p class="text-[10px] font-bold text-slate-500 dark:text-indigo-300 uppercase tracking-widest">{{ t('guide.roleControl') }}</p>
-            </div>
-            <div class="p-6 bg-white/5 dark:bg-black/20 rounded-3xl border border-white/10">
-              <p class="text-2xl font-black mb-1">Live</p>
-              <p class="text-[10px] font-bold text-slate-500 dark:text-indigo-300 uppercase tracking-widest">{{ t('guide.stockTracking') }}</p>
-            </div>
-            <div class="p-6 bg-white/5 dark:bg-black/20 rounded-3xl border border-white/10">
-              <p class="text-2xl font-black mb-1">Fast</p>
-              <p class="text-[10px] font-bold text-slate-500 dark:text-indigo-300 uppercase tracking-widest">{{ t('guide.paymentFlow') }}</p>
+            <div class="space-y-3">
+              <div class="h-1.5 w-full bg-white/10 rounded-full"></div>
+              <div class="h-1.5 w-3/4 bg-white/10 rounded-full"></div>
+              <div class="h-1.5 w-1/2 bg-white/10 rounded-full"></div>
+              <div class="pt-2">
+                <p class="text-[9px] font-bold text-slate-500 dark:text-indigo-300 uppercase tracking-widest">{{ t('guide.paymentFlow') }}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </DashboardLayout>
+  </div>
 </template>

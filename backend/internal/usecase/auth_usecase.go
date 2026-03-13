@@ -9,12 +9,13 @@ import (
 )
 
 type authUsecase struct {
-	repo      domain.AuthRepository
-	jwtSecret string
+	repo       domain.AuthRepository
+	branchRepo domain.BranchRepository
+	jwtSecret  string
 }
 
-func NewAuthUsecase(repo domain.AuthRepository, jwtSecret string) domain.AuthUsecase {
-	return &authUsecase{repo: repo, jwtSecret: jwtSecret}
+func NewAuthUsecase(repo domain.AuthRepository, branchRepo domain.BranchRepository, jwtSecret string) domain.AuthUsecase {
+	return &authUsecase{repo: repo, branchRepo: branchRepo, jwtSecret: jwtSecret}
 }
 
 func (u *authUsecase) Register(username, password, tenantName string) (string, error) {
@@ -24,17 +25,28 @@ func (u *authUsecase) Register(username, password, tenantName string) (string, e
 		return "", err
 	}
 
-	// 2. Hash Password
+	// 2. Create Default Branch
+	mainBranch := &domain.Branch{
+		TenantID: tenant.ID,
+		Name:     "Main Branch",
+		IsActive: true,
+	}
+	if err := u.branchRepo.Create(mainBranch); err != nil {
+		return "", err
+	}
+
+	// 3. Hash Password
 	hashedPassword, err := auth.HashPassword(password)
 	if err != nil {
 		return "", err
 	}
 
-	// 3. Create User (Owner)
+	// 4. Create User (Owner)
 	user := &domain.User{
 		Username:     username,
 		PasswordHash: hashedPassword,
 		TenantID:     tenant.ID,
+		BranchID:     &mainBranch.ID,
 		IsOwner:      true,
 	}
 
@@ -42,12 +54,12 @@ func (u *authUsecase) Register(username, password, tenantName string) (string, e
 		return "", err
 	}
 
-	// 4. Seed Default Roles
+	// 5. Seed Default Roles
 	defaultRoles := []domain.Role{
 		{
 			TenantID:    tenant.ID,
 			Name:        "Manager",
-			Permissions: []string{"dashboard", "inventory", "recipes", "production", "production_log", "pos_order", "pos_payment", "order_history", "employees", "settings"},
+			Permissions: []string{"dashboard", "inventory", "recipes", "production", "production_log", "pos_order", "pos_payment", "order_history", "employees", "settings", "branches"},
 		},
 		{
 			TenantID:    tenant.ID,

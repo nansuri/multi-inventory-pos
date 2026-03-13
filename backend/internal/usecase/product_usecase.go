@@ -20,25 +20,25 @@ func (u *productUsecase) CreateProduct(product *domain.Product) error {
 	return u.repo.CreateProduct(product)
 }
 
-func (u *productUsecase) GetProductByID(id uint, tenantID uint) (*domain.Product, error) {
-	return u.repo.GetProductByID(id, tenantID)
+func (u *productUsecase) GetProductByID(id uint, branchID uint) (*domain.Product, error) {
+	return u.repo.GetProductByID(id, branchID)
 }
 
-func (u *productUsecase) ListProducts(tenantID uint) ([]domain.Product, error) {
-	return u.repo.ListProducts(tenantID)
+func (u *productUsecase) ListProducts(branchID uint) ([]domain.Product, error) {
+	return u.repo.ListProducts(branchID)
 }
 
 func (u *productUsecase) UpdateProduct(product *domain.Product) error {
 	return u.repo.UpdateProduct(product)
 }
 
-func (u *productUsecase) DeleteProduct(id uint, tenantID uint) error {
-	return u.repo.DeleteProduct(id, tenantID)
+func (u *productUsecase) DeleteProduct(id uint, branchID uint) error {
+	return u.repo.DeleteProduct(id, branchID)
 }
 
-func (u *productUsecase) SetRecipe(productID uint, tenantID uint, recipes []domain.Recipe) error {
-	// Check if product belongs to tenant
-	_, err := u.repo.GetProductByID(productID, tenantID)
+func (u *productUsecase) SetRecipe(productID uint, branchID uint, recipes []domain.Recipe) error {
+	// Check if product belongs to branch
+	_, err := u.repo.GetProductByID(productID, branchID)
 	if err != nil {
 		return err
 	}
@@ -59,9 +59,9 @@ func (u *productUsecase) SetRecipe(productID uint, tenantID uint, recipes []doma
 	return nil
 }
 
-func (u *productUsecase) PrepareProduct(productID uint, tenantID uint, pax int) error {
+func (u *productUsecase) PrepareProduct(productID uint, branchID uint, pax int) error {
 	// 1. Get Product and Recipes
-	product, err := u.repo.GetProductByID(productID, tenantID)
+	product, err := u.repo.GetProductByID(productID, branchID)
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func (u *productUsecase) PrepareProduct(productID uint, tenantID uint, pax int) 
 		neededInStockUnit, _ := utils.ConvertUnit(recipe.Quantity*float64(pax), recipe.Unit, recipe.Ingredient.Unit)
 		err := u.inventoryRepo.UpdateItem(&domain.Item{
 			ID:           recipe.IngredientID,
-			TenantID:     tenantID,
+			BranchID:     branchID,
 			CurrentStock: recipe.Ingredient.CurrentStock - neededInStockUnit,
 		})
 		if err != nil {
@@ -112,13 +112,14 @@ func (u *productUsecase) PrepareProduct(productID uint, tenantID uint, pax int) 
 
 	// 5. Create log with ingredients
 	return u.repo.CreateProductionLog(&domain.ProductionLog{
-		TenantID:    tenantID,
+		TenantID:    product.TenantID,
+		BranchID:    branchID,
 		ProductID:   productID,
 		Pax:         pax,
 		Ingredients: ingredientLogs,
 	})
 }
 
-func (u *productUsecase) ListProductionLogs(tenantID uint) ([]domain.ProductionLog, error) {
-	return u.repo.ListProductionLogs(tenantID)
+func (u *productUsecase) ListProductionLogs(branchID uint) ([]domain.ProductionLog, error) {
+	return u.repo.ListProductionLogs(branchID)
 }
